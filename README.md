@@ -3,6 +3,8 @@ A realtime log viewer for all kinds of data sources (log4j, log4net, nlog, logca
 
 This is basically a simple log viewer that shows you logs in realtime
 
+![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9699889/4e45685a-53f1-11e5-98c2-c59b64711027.png)
+
 ## Loginator can do the following
 
 * Activate/deactivate logging
