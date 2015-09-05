@@ -28,9 +28,13 @@ and add the logger
 
 # Logcat logging:
 
+1. Connect your USB device to your PC or Mac and forward the logcat output to your machine with Loginator running.
+2. Find you device ID: /...path-to.../Android/sdk/platform-tools/adb devices
 
+Mac:
+cat <(/[path-to]/Android/sdk/platform-tools/adb -s [your-device-id] logcat) | nc -u 192.168.1.5 7071
 
 # Tested with:
 
-* NLog (.net)
-* Android logcat (default output format)
+* Chainsaw: NLog (.net), same machine
+* Logcat: Android logcat (default output format), remote machine
