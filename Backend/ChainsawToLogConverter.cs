@@ -14,7 +14,7 @@ namespace Backend {
 
         private string log4j = "http://jakarta.apache.org/log4j";
 
-        public Log Convert(string text) {
+        public IEnumerable<Log> Convert(string text) {
 
             Log log = new Log();
 
@@ -70,7 +70,7 @@ namespace Backend {
                 xr.Close();
             }
 
-            return log;
+            return new Log[] { log };
         }
 
         private double ConvertToUnixTimestamp(DateTime date) {

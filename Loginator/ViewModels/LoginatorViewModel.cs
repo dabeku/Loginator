@@ -12,15 +12,15 @@ namespace LogApplication.ViewModels {
     using System.Windows.Threading;
     using GalaSoft.MvvmLight.Threading;
     using Backend;
-    using Backend.Model;
     using Backend.Events;
     using System.Threading;
+    using Backend.Model;
+    using Common;
 
     public class LoginatorViewModel : INotifyPropertyChanged {
 
         private readonly static LoginatorViewModel instance = new LoginatorViewModel();
 
-        private const string NAMESPACE_SPLITTER = ".";
         private const int TIME_INTERVAL_IN_MILLISECONDS = 1000;
         private const int DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL = 1000;
         private static object SYNC_OBJECT = new Object();
@@ -70,7 +70,7 @@ namespace LogApplication.ViewModels {
         }
 
         public ObservableCollection<LogViewModel> Logs { get; set; }
-        public ObservableCollection<Namespace> Namespaces { get; set; }
+        public ObservableCollection<NamespaceViewModel> Namespaces { get; set; }
 
         private LoginatorViewModel() {
             IsActive = true;
@@ -78,7 +78,7 @@ namespace LogApplication.ViewModels {
             NumberOfLogsPerLevel = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
             numberOfLogsPerLevelInternal = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
             Logs = new ObservableCollection<LogViewModel>();
-            Namespaces = new ObservableCollection<Namespace>();
+            Namespaces = new ObservableCollection<NamespaceViewModel>();
             Receiver = new Receiver();
             Receiver.Initialize();
             Receiver.LogReceived += Receiver_LogReceived;
@@ -136,17 +136,17 @@ namespace LogApplication.ViewModels {
                 // Example: Verbosus.VerbTeX.View
                 string nsLogFull = log.Namespace;
                 if (nsLogFull == null) {
-                    nsLogFull = "Global";
+                    nsLogFull = Constants.NAMESPACE_GLOBAL;
                 }
                 // Example: Verbosus
-                string nsLogPart = nsLogFull.Split(new string[] { NAMESPACE_SPLITTER }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                string nsLogPart = nsLogFull.Split(new string[] { Constants.NAMESPACE_SPLITTER }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                 // Try to get existing namespace with name Verbosus
                 var ns = Namespaces.FirstOrDefault(m => m.Name == nsLogPart);
                 if (ns == null) {
-                    ns = new Namespace(nsLogPart);
+                    ns = new NamespaceViewModel(nsLogPart);
                     Namespaces.Add(ns);
                 }
-                HandleNamespace(ns, nsLogFull.Substring(nsLogFull.IndexOf(NAMESPACE_SPLITTER) + 1));
+                HandleNamespace(ns, nsLogFull.Substring(nsLogFull.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
                 //IList<Namespace> namespaces = new List<Namespace>();
                 //if (log.Namespace == null) {
                 //    namespaces.Add(Namespace.DEFAULT);
@@ -179,22 +179,22 @@ namespace LogApplication.ViewModels {
             }
         }
 
-        
-        private void HandleNamespace(Namespace parent, string suffix) {
+
+        private void HandleNamespace(NamespaceViewModel parent, string suffix) {
             // Example: VerbTeX.View (Verbosus was processed before)
             string nsLogFull = suffix;
             // Example: VerbTeX
-            string nsLogPart = nsLogFull.Split(new string[] { NAMESPACE_SPLITTER }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            string nsLogPart = nsLogFull.Split(new string[] { Constants.NAMESPACE_SPLITTER }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
             // Try to get existing namespace with name VerbTeX
             var nsChild = parent.Children.FirstOrDefault(m => m.Name == nsLogPart);
             if (nsChild == null) {
-                nsChild = new Namespace(nsLogPart);
+                nsChild = new NamespaceViewModel(nsLogPart);
                 parent.Children.Add(nsChild);
                 nsChild.Parent = parent;
             }
 
-            if (suffix.Contains(NAMESPACE_SPLITTER)) {
-                HandleNamespace(nsChild, suffix.Substring(suffix.IndexOf(NAMESPACE_SPLITTER) + 1));
+            if (suffix.Contains(Constants.NAMESPACE_SPLITTER)) {
+                HandleNamespace(nsChild, suffix.Substring(suffix.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
             }
 
             //var splittedNamespace = suffix.Split(NAMESPACE_SPLITTER).Select(m => new Namespace(m));
@@ -219,16 +219,16 @@ namespace LogApplication.ViewModels {
             //}
         }
 
-        private void ResetAllCount(Namespace ns) {
+        private void ResetAllCount(NamespaceViewModel ns) {
             ns.Count = 0;
             foreach (var child in ns.Children) {
                 ResetAllCount(child);
             }
         }
 
-        private void HandleLogVisibilityByNamespace(LogViewModel log, Namespace ns, string currentNamespace) {
+        private void HandleLogVisibilityByNamespace(LogViewModel log, NamespaceViewModel ns, string currentNamespace) {
             foreach (var child in ns.Children) {
-                string nsAbsolute = currentNamespace + NAMESPACE_SPLITTER + child.Name;
+                string nsAbsolute = currentNamespace + Constants.NAMESPACE_SPLITTER + child.Name;
                 if (log.Namespace == nsAbsolute) {
                     child.Count++;
                     if (child.IsChecked) {
@@ -239,7 +239,7 @@ namespace LogApplication.ViewModels {
                     }
                 }
                 else {
-                    HandleLogVisibilityByNamespace(log, child, currentNamespace + NAMESPACE_SPLITTER + child.Name);
+                    HandleLogVisibilityByNamespace(log, child, currentNamespace + Constants.NAMESPACE_SPLITTER + child.Name);
                 }
             }
         }

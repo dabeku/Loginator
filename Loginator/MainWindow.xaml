@@ -79,7 +79,7 @@
                     <Style TargetType="ListViewItem">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsVisible}" Value="False">
-                                <Setter Property="ListBoxItem.Visibility" Value="Hidden" />
+                                <Setter Property="ListBoxItem.Visibility" Value="Collapsed" />
                                 <Setter Property="Height" Value="0" />
                             </DataTrigger>
                         </Style.Triggers>

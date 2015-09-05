@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 
-namespace Backend.Model {
+namespace LogApplication.ViewModels {
 
-    public class Namespace : INotifyPropertyChanged {
+    public class NamespaceViewModel : INotifyPropertyChanged {
 
         private bool isChecked;
         public bool IsChecked {
@@ -50,41 +51,18 @@ namespace Backend.Model {
                 OnPropertyChanged("Count");
             }
         }
-
-        //private bool isSelected;
-        //public bool IsSelected {
-        //    get {
-        //        return isSelected;
-        //    }
-        //    set {
-        //        isSelected = value;
-        //        OnPropertyChanged("IsSelected");
-        //    }
-        //}
-
+        
         public string Name { get; set; }
-        public Namespace Parent { get; set; }
-        public IList<Namespace> Children { get; set; }
+        public NamespaceViewModel Parent { get; set; }
+        public ObservableCollection<NamespaceViewModel> Children { get; set; }
 
-        public Namespace(string name) {
+        public NamespaceViewModel(string name) {
             IsChecked = true;
             IsExpanded = true;
             Name = name;
-            Children = new List<Namespace>();
+            Children = new ObservableCollection<NamespaceViewModel>();
         }
-
-        public override bool Equals(object obj) {
-            if (obj == null || GetType() != obj.GetType()) {
-                return false;
-            }
-            Namespace other = (Namespace)obj;
-            return Name == other.Name;
-        }
-
-        public override int GetHashCode() {
-            return Name.GetHashCode();
-        }
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string property) {

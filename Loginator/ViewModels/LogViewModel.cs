@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Backend.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Backend.Model {
+namespace LogApplication.ViewModels {
 
     public class LogViewModel : INotifyPropertyChanged {
         public DateTime Timestamp { get; set; }
@@ -29,7 +30,7 @@ namespace Backend.Model {
 
         public LogViewModel() {
             Properties = new List<Property>();
-            IsVisible = true;
+            IsVisible = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

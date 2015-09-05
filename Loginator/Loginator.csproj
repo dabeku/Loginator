@@ -71,6 +71,7 @@
     <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\LogViewModel.cs" />
     <Compile Include="ViewModels\LoginatorViewModel.cs" />
+    <Compile Include="ViewModels\NamespaceViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -122,6 +123,10 @@
     <ProjectReference Include="..\Backend\Backend.csproj">
       <Project>{2f94aa95-0af9-4ccc-b2c1-5a45f3257496}</Project>
       <Name>Backend</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{43d3f45f-3f5a-4736-bdc0-50bc7f54f2bb}</Project>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

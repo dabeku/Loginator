@@ -27,20 +27,7 @@ namespace Backend.Model {
                 return new Log();
             }
         }
-
-        public override string ToString() {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Namespace: ");
-            sb.AppendLine(Namespace);
-            sb.Append("Message: ");
-            sb.AppendLine(Message);
-            if (!String.IsNullOrEmpty(Exception)) {
-                sb.Append("Exception: ");
-                sb.AppendLine(Exception);
-            }
-            return sb.ToString();
-        }
-
+        
         public override bool Equals(object obj) {
             if (obj == null || GetType() != obj.GetType()) {
                 return false;

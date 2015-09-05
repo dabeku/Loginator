@@ -15,7 +15,7 @@ namespace Backend {
     public class Receiver {
 
         // TODO: Make configurable
-        private const string LOG_TYPE = "logcat";
+        private const string LOG_TYPE = "chainsaw";
 
         private const string LOG_TYPE_CHAINSAW = "chainsaw";
         private const string LOG_TYPE_LOGCAT = "logcat";
@@ -55,19 +55,21 @@ namespace Backend {
             if (isRightHost && isRightPort) {
                 string receivedText = Encoding.ASCII.GetString(receiveBytes);
 
-                Log log = null;
+                IEnumerable<Log> logs;
 
                 if (LOG_TYPE == LOG_TYPE_CHAINSAW) {
-                    log = ChainsawConverter.Convert(receivedText);
+                    logs = ChainsawConverter.Convert(receivedText);
                 } else if (LOG_TYPE == LOG_TYPE_LOGCAT) {
-                    log = LogcatConverter.Convert(receivedText);
+                    logs = LogcatConverter.Convert(receivedText);
                 }
 
-                Console.WriteLine("Parsed (Level): " + log.Level);
-                Console.WriteLine("Parsed (Message): " + log.Message);
+                //Console.WriteLine("Parsed (Level): " + log.Level);
+                //Console.WriteLine("Parsed (Message): " + log.Message);
 
                 if (LogReceived != null) {
-                    LogReceived(this, new LogReceivedEventArgs(log));
+                    foreach (Log log in logs) {
+                        LogReceived(this, new LogReceivedEventArgs(log));
+                    }
                 }
             }
 

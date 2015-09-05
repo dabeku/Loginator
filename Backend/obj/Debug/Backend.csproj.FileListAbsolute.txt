@@ -3,3 +3,10 @@ C:\ProjectsWindows\Loginator\Loginator\Backend\bin\Debug\Backend.pdb
 C:\ProjectsWindows\Loginator\Loginator\Backend\obj\Debug\Backend.csprojResolveAssemblyReference.cache
 C:\ProjectsWindows\Loginator\Loginator\Backend\obj\Debug\Backend.dll
 C:\ProjectsWindows\Loginator\Loginator\Backend\obj\Debug\Backend.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Backend\bin\Debug\Backend.dll
+C:\Users\Daniel\Documents\GitHub\Loginator\Backend\bin\Debug\Backend.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Backend\obj\Debug\Backend.csprojResolveAssemblyReference.cache
+C:\Users\Daniel\Documents\GitHub\Loginator\Backend\obj\Debug\Backend.dll
+C:\Users\Daniel\Documents\GitHub\Loginator\Backend\obj\Debug\Backend.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Backend\bin\Debug\Common.dll
+C:\Users\Daniel\Documents\GitHub\Loginator\Backend\bin\Debug\Common.pdb
