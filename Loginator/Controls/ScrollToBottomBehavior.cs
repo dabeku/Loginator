@@ -27,21 +27,22 @@ namespace Loginator.Controls {
         }
 
         private void collection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            if (e.Action == NotifyCollectionChangedAction.Add) {
+            //if (e.Action == NotifyCollectionChangedAction.Add) {
                 ScrollToLastItem();
-            }
+            //}
         }
 
         private void ScrollToLastItem() {
+            lock (this) {
+                if (!LoginatorViewModel.Instance.IsScrollingToBottom) {
+                    return;
+                }
 
-            if (!LoginatorViewModel.Instance.IsScrollingToBottom) {
-                return;
-            }
-
-            int count = AssociatedObject.Items.Count;
-            if (count > 0) {
-                var last = AssociatedObject.Items[count - 1];
-                AssociatedObject.ScrollIntoView(last);
+                int count = AssociatedObject.Items.Count;
+                if (count > 0) {
+                    var last = AssociatedObject.Items[count - 1];
+                    AssociatedObject.ScrollIntoView(last);
+                }
             }
         }
     }
