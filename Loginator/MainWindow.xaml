@@ -1,0 +1,126 @@
+﻿<Window x:Class="Loginator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:controls="clr-namespace:Loginator.Controls"
+        Title="Loginator" Height="600" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="200" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <StackPanel Orientation="Horizontal">
+                <CheckBox Content="Is active" IsChecked="{Binding IsActive}" Margin="4,2,0,0"></CheckBox>
+                <CheckBox Content="Scroll to bottom" IsChecked="{Binding IsScrollingToBottom}" Margin="16,2,0,0"></CheckBox>
+                <Label Content="Number of logs per level" Width="160" Margin="16,0,0,0"></Label>
+                <TextBox Width="100" Text="{Binding NumberOfLogsPerLevel}"></TextBox>
+                <Button Content="Apply" Width="100" Margin="4,0,0,0" Command="{Binding UpdateNumberOfLogsPerLevelCommand}"></Button>
+                <Button Content="Clear" Width="100" Margin="4,0,0,0" Command="{Binding ClearLogCommand}"></Button>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="100" />
+            </Grid.RowDefinitions>
+            <!--controls:GridViewColumnResize.Enabled="True"-->
+            <!--controls:GridViewColumnResize.Width="130"-->
+            <!--controls:GridViewColumnResize.Width="*"-->
+            <ListView Grid.Row="0"
+                SelectedItem="{Binding SelectedLog}"
+                ItemsSource="{Binding Logs}"
+                Name="lvLogs"
+                SelectionMode="Single"
+                controls:GridViewColumnResize.Enabled="True"
+                >
+                <i:Interaction.Behaviors>
+                    <controls:ScrollToBottomBehavior />
+                </i:Interaction.Behaviors>
+                <ListView.View>
+                    <GridView AllowsColumnReorder="False">
+                        <GridViewColumn Header="Timestamp" controls:GridViewColumnResize.Width="140">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:dd.MM.yyyy hh:mm:ss.fff}'}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Level" controls:GridViewColumnResize.Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Level}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Thread" controls:GridViewColumnResize.Width="50">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Thread}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Message" controls:GridViewColumnResize.Width="*">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Message, Converter={StaticResource SingleLineTextConverter}}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+                <ListView.Resources>
+                    <Style TargetType="ListViewItem">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                                <Setter Property="ListBoxItem.Visibility" Value="Hidden" />
+                                <Setter Property="Height" Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.Resources>
+            </ListView>
+            <GridSplitter Grid.Row="1" ResizeBehavior="BasedOnAlignment" ResizeDirection="Rows" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <ScrollViewer Grid.Row="2">
+                <TextBox Background="Transparent" BorderThickness="0" Text="{Binding SelectedLog, Converter={StaticResource LogToTextConverter}}" VerticalAlignment="Top" VerticalContentAlignment="Top" IsReadOnly="True" TextWrapping="Wrap" Height="Auto" Margin="0,0,0,0" />
+            </ScrollViewer>
+        </Grid>
+        <GridSplitter Grid.Row="1" Grid.Column="1" ResizeBehavior="BasedOnAlignment" ResizeDirection="Columns" Width="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <Grid Grid.Row="1" Grid.Column="2">
+            <TreeView
+                ItemsSource="{Binding Namespaces}"
+                >
+                <TreeView.Resources>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded}"/>
+                    </Style>
+                </TreeView.Resources>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Focusable="False" IsChecked="{Binding IsChecked}" VerticalAlignment="Center" />
+                            <Label>
+                                <Label.Content>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} ({1})">
+                                                <Binding Path="Name" />
+                                                <Binding Path="Count" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Label.Content>
+                            </Label>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </Grid>
+    </Grid>
+</Window>
