@@ -53,4 +53,4 @@ cat <(/[path-to]/Android/sdk/platform-tools/adb -s [your-device-id] logcat) | nc
 ## Tested with
 
 * Chainsaw: NLog (.net), same machine (Windows 10)
-* Logcat: Android logcat (default output format), remote machine (Mac OSx, Windows 10)
+* Logcat: Android logcat (default output format), remote machine (Android: Mac OSx, Loginator: Windows 10)
