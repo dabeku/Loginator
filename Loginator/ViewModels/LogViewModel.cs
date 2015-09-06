@@ -14,6 +14,8 @@ namespace LogApplication.ViewModels {
         public string Message { get; set; }
         public string Exception { get; set; }
         public string Namespace { get; set; }
+        public string Application { get; set; }
+        // TODO: Move this column to details textbox in xaml
         public string Thread { get; set; }
         public IEnumerable<Property> Properties { get; set; }
 

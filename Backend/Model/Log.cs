@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Backend.Model {
         public string Message { get; set; }
         public string Exception { get; set; }
         public string Namespace { get; set; }
+        public string Application { get; set; }
         public string Thread { get; set; }
         public IEnumerable<Property> Properties { get; set; }
 
@@ -20,6 +22,8 @@ namespace Backend.Model {
         public Log() {
             Properties = new List<Property>();
             Timestamp = DateTime.Now;
+            Namespace = Constants.NAMESPACE_GLOBAL;
+            Application = Constants.APPLICATION_GLOBAL;
         }
 
         public static Log DEFAULT {

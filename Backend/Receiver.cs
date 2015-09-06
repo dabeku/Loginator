@@ -15,7 +15,7 @@ namespace Backend {
     public class Receiver {
 
         // TODO: Make configurable
-        private const string LOG_TYPE = "logcat";
+        private const string LOG_TYPE = "chainsaw";
 
         private const string LOG_TYPE_CHAINSAW = "chainsaw";
         private const string LOG_TYPE_LOGCAT = "logcat";

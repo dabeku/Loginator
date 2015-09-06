@@ -59,6 +59,8 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -69,6 +71,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ViewModels\DelegateCommand.cs" />
+    <Compile Include="ViewModels\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\LogViewModel.cs" />
     <Compile Include="ViewModels\LoginatorViewModel.cs" />
     <Compile Include="ViewModels\NamespaceViewModel.cs" />

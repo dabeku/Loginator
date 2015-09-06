@@ -8,6 +8,7 @@ namespace Common {
     public static class Constants {
         public const string NAMESPACE_SPLITTER = ".";
         public const string NAMESPACE_LOGCAT = "Logcat";
-        public const string NAMESPACE_GLOBAL = "Global";
+        public const string NAMESPACE_GLOBAL = "Global (namespace)";
+        public const string APPLICATION_GLOBAL = "Global (application)";
     }
 }

@@ -69,16 +69,23 @@ namespace LogApplication.ViewModels {
             }
         }
 
-        public ObservableCollection<LogViewModel> Logs { get; set; }
+        private List<LogViewModel> LogsToInsert { get; set; }
+
+        public ObservableRangeCollection<LogViewModel> Logs { get; set; }
         public ObservableCollection<NamespaceViewModel> Namespaces { get; set; }
+        public ObservableCollection<ApplicationViewModel> Applications { get; set; }
+
+        public event EventHandler<EventArgs> Updated;
 
         private LoginatorViewModel() {
             IsActive = true;
             IsScrollingToBottom = true;
             NumberOfLogsPerLevel = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
             numberOfLogsPerLevelInternal = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
-            Logs = new ObservableCollection<LogViewModel>();
+            Logs = new ObservableRangeCollection<LogViewModel>();
+            LogsToInsert = new List<LogViewModel>();
             Namespaces = new ObservableCollection<NamespaceViewModel>();
+            Applications = new ObservableCollection<ApplicationViewModel>();
             Receiver = new Receiver();
             Receiver.Initialize();
             Receiver.LogReceived += Receiver_LogReceived;
@@ -88,7 +95,12 @@ namespace LogApplication.ViewModels {
         private void Callback(Object state) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
                 lock (SYNC_OBJECT) {
+                    UpdateLogs();
                     UpdateNamespaces();
+                    UpdateApplications();
+                    //if (Updated != null) {
+                    //    Updated(this, null);
+                    //}
                     Timer.Change(TIME_INTERVAL_IN_MILLISECONDS, Timeout.Infinite);
                 }
             });
@@ -100,6 +112,7 @@ namespace LogApplication.ViewModels {
                 Level = log.Level,
                 Message = log.Message,
                 Namespace = log.Namespace,
+                Application = log.Application,
                 Properties = log.Properties,
                 Thread = log.Thread,
                 Timestamp = log.Timestamp
@@ -112,19 +125,26 @@ namespace LogApplication.ViewModels {
                     if (!IsActive) {
                         return;
                     }
-                    Logs.Add(ToLogViewModel(e.Log));
-                    UpdateLogs();
+                    LogsToInsert.Add(ToLogViewModel(e.Log));
+                    //Logs.Insert(0, ToLogViewModel(e.Log));
+                    //UpdateLogs();
                 }
             });
         }
 
         private void UpdateLogs() {
+
+            var logsToInsert = LogsToInsert.OrderBy(m => m.Timestamp);
+            Logs.AddRangeAtStart(logsToInsert);
+            LogsToInsert.Clear();
+            
             var levels = new List<string>(Logs.Select(m => m.Level).Distinct());
             foreach (var level in levels) {
                 var logsByLevel = Logs.Where(m => m.Level == level);
                 int logCountByLevel = logsByLevel.Count();
                 while (logCountByLevel > numberOfLogsPerLevelInternal) {
-                    Logs.Remove(logsByLevel.ElementAt(0));
+                    Logs.Remove(logsByLevel.ElementAt(logsByLevel.Count() - 1));
+                    //Logs.Remove(logsByLevel.ElementAt(0));
                     logsByLevel = Logs.Where(m => m.Level == level);
                     logCountByLevel = logsByLevel.Count();
                 }
@@ -135,9 +155,6 @@ namespace LogApplication.ViewModels {
             foreach (var log in Logs) {
                 // Example: Verbosus.VerbTeX.View
                 string nsLogFull = log.Namespace;
-                if (nsLogFull == null) {
-                    nsLogFull = Constants.NAMESPACE_GLOBAL;
-                }
                 // Example: Verbosus
                 string nsLogPart = nsLogFull.Split(new string[] { Constants.NAMESPACE_SPLITTER }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                 // Try to get existing namespace with name Verbosus
@@ -147,23 +164,6 @@ namespace LogApplication.ViewModels {
                     Namespaces.Add(ns);
                 }
                 HandleNamespace(ns, nsLogFull.Substring(nsLogFull.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
-                //IList<Namespace> namespaces = new List<Namespace>();
-                //if (log.Namespace == null) {
-                //    namespaces.Add(Namespace.DEFAULT);
-                //} else {
-                //    namespaces = log.Namespace.Split(NAMESPACE_SPLITTER).Select(m => new Namespace(m)).ToList();
-                //}
-                //if (!namespaces.Any()) {
-                //    continue;
-                //}
-                //Namespace ns = namespaces.ElementAt(0);
-                //if (!Namespaces.Contains(ns)) {
-                //    Namespaces.Add(ns);
-                //} else {
-                //    ns = Namespaces.ElementAt(Namespaces.IndexOf(ns));
-                //}
-
-                //HandleNamespace(ns, log.Namespace.Substring(log.Namespace.IndexOf(NAMESPACE_SPLITTER) + 1), log.Namespace);
             }
 
             foreach (var ns in Namespaces) {
@@ -171,14 +171,11 @@ namespace LogApplication.ViewModels {
             }
 
             foreach (var log in Logs) {
-                //var rootNamespace = log.Namespace.Split(NAMESPACE_SPLITTER).FirstOrDefault();
-                //Console.WriteLine("Namespace: " + ns.Name + "/" + ns.IsChecked);
                 foreach (var ns in Namespaces) {
                     HandleLogVisibilityByNamespace(log, ns, ns.Name);
                 }
             }
         }
-
 
         private void HandleNamespace(NamespaceViewModel parent, string suffix) {
             // Example: VerbTeX.View (Verbosus was processed before)
@@ -196,27 +193,16 @@ namespace LogApplication.ViewModels {
             if (suffix.Contains(Constants.NAMESPACE_SPLITTER)) {
                 HandleNamespace(nsChild, suffix.Substring(suffix.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
             }
+        }
 
-            //var splittedNamespace = suffix.Split(NAMESPACE_SPLITTER).Select(m => new Namespace(m));
-            //if (!splittedNamespace.Any()) {
-            //    return;
-            //}
-            //Namespace ns = splittedNamespace.ElementAt(0);
-            //if (Namespaces.Contains(ns)) {
-            //    ns = Namespaces.ElementAt(Namespaces.IndexOf(ns));
-            //}
-
-            ////ns.IsSelected = true;
-            //if (!parent.Children.Contains(ns)) {
-            //    parent.Children.Add(ns);
-            //    ns.Parent = parent;
-            //}
-            ////if (LoginatorViewModel.SelectedLog != null && LoginatorViewModel.SelectedLog.Namespace == fullNamespace) {
-            ////    ns.IsSelected = true;
-            ////}
-            //if (suffix.Contains(NAMESPACE_SPLITTER)) {
-            //    HandleNamespace(ns, suffix.Substring(suffix.IndexOf(NAMESPACE_SPLITTER) + 1), fullNamespace);
-            //}
+        private void UpdateApplications() {
+            foreach (var log in Logs) {
+                var application = Applications.FirstOrDefault(m => m.Name == log.Application);
+                if (application == null) {
+                    application = new ApplicationViewModel(log.Application);
+                    Applications.Add(application);
+                }
+            }
         }
 
         private void ResetAllCount(NamespaceViewModel ns) {
@@ -231,8 +217,14 @@ namespace LogApplication.ViewModels {
                 string nsAbsolute = currentNamespace + Constants.NAMESPACE_SPLITTER + child.Name;
                 if (log.Namespace == nsAbsolute) {
                     child.Count++;
+                    // Only active if namespace AND application are active
                     if (child.IsChecked) {
-                        log.IsVisible = true;
+                        var application = Applications.FirstOrDefault(m => m.Name == log.Application);
+                        if (application != null && application.IsActive && LogLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel)) {
+                            log.IsVisible = true;
+                        } else {
+                            log.IsVisible = false;
+                        }
                     }
                     else {
                         log.IsVisible = false;
@@ -243,7 +235,6 @@ namespace LogApplication.ViewModels {
                 }
             }
         }
-
 
         public void Update() {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
@@ -267,6 +258,7 @@ namespace LogApplication.ViewModels {
                 lock (SYNC_OBJECT) {
                     Logs.Clear();
                     Namespaces.Clear();
+                    Applications.Clear();
                 }
             });
         }

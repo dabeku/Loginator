@@ -12,7 +12,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
             <StackPanel Orientation="Horizontal">
@@ -40,9 +40,9 @@
                 SelectionMode="Single"
                 controls:GridViewColumnResize.Enabled="True"
                 >
-                <i:Interaction.Behaviors>
+                <!--<i:Interaction.Behaviors>
                     <controls:ScrollToBottomBehavior />
-                </i:Interaction.Behaviors>
+                </i:Interaction.Behaviors>-->
                 <ListView.View>
                     <GridView AllowsColumnReorder="False">
                         <GridViewColumn Header="Timestamp" controls:GridViewColumnResize.Width="140">
@@ -93,9 +93,38 @@
         </Grid>
         <GridSplitter Grid.Row="1" Grid.Column="1" ResizeBehavior="BasedOnAlignment" ResizeDirection="Columns" Width="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         <Grid Grid.Row="1" Grid.Column="2">
-            <TreeView
-                ItemsSource="{Binding Namespaces}"
-                >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="200" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <ListView Grid.Row="0"
+                ItemsSource="{Binding Applications}"
+                SelectionMode="Single"
+                controls:GridViewColumnResize.Enabled="True">
+                <ListView.View>
+                    <GridView AllowsColumnReorder="False">
+                        <GridViewColumn Header="Level" controls:GridViewColumnResize.Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox ItemsSource="{Binding Path=LogLevels}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding Path=SelectedMinLogLevel}" Width="70"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Application" controls:GridViewColumnResize.Width="*">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding IsActive}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <GridSplitter Grid.Row="1" ResizeBehavior="BasedOnAlignment" ResizeDirection="Rows" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <TreeView Grid.Row="2"
+                ItemsSource="{Binding Namespaces}">
                 <TreeView.Resources>
                     <Style TargetType="TreeViewItem">
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded}"/>

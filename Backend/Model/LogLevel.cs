@@ -4,13 +4,48 @@ using System.Linq;
 using System.Text;
 
 namespace Backend.Model {
-    public static class LogLevel {
-        public static readonly string NOT_SET = "[not set]";
-        public static readonly string TRACE = "TRACE";
-        public static readonly string DEBUG = "DEBUG";
-        public static readonly string INFO = "INFO";
-        public static readonly string WARN = "WARN";
-        public static readonly string ERROR = "ERROR";
-        public static readonly string FATAL = "FATAL";
+    public class LogLevel {
+
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+
+        public const string NOT_SET = "[not set]";
+        public const string TRACE = "TRACE";
+        public const string DEBUG = "DEBUG";
+        public const string INFO = "INFO";
+        public const string WARN = "WARN";
+        public const string ERROR = "ERROR";
+        public const string FATAL = "FATAL";
+
+        public LogLevel(string name) {
+            Id = name;
+            Name = name;
+        }
+
+        public static bool IsLogLevelAboveMin(string level, string minLevel) {
+            if (String.IsNullOrEmpty(level) || String.IsNullOrEmpty(minLevel)) {
+                return false;
+            }
+
+            if (minLevel == TRACE) {
+                return true;
+            }
+            if (minLevel == DEBUG && (level == DEBUG || level == INFO || level == WARN || level == ERROR || level == FATAL)) {
+                return true;
+            }
+            if (minLevel == INFO && (level == INFO || level == WARN || level == ERROR || level == FATAL)) {
+                return true;
+            }
+            if (minLevel == WARN && (level == WARN || level == ERROR || level == FATAL)) {
+                return true;
+            }
+            if (minLevel == ERROR && (level == ERROR || level == FATAL)) {
+                return true;
+            }
+            if (minLevel == FATAL && (level == FATAL)) {
+                return true;
+            }
+            return false;
+        }
     }
 }

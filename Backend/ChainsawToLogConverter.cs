@@ -63,6 +63,9 @@ namespace Backend {
                             var props = eventEl.Element(log4jNs + "properties").Elements(log4jNs + "data");
                             log.Properties = props.Select(m => new Property(m.Attribute("name").Value, m.Attribute("value").Value));
 
+                            var application = log.Properties.FirstOrDefault(m => m.Name == "log4japp");
+                            log.Application = application == null ? null : application.Value;
+
                             eventReader.Close();
                         }
                     }
