@@ -1,7 +1,12 @@
 # Loginator
-A realtime log viewer for all kinds of data sources (log4j, log4net, nlog, logcat, etc.)
+The best way to display your logs
 
-This is basically a simple log viewer that shows you logs in realtime
+Loginator is a simple log viewer that shows you logs in realtime:
+
+* Chainsaw (nlog, log4net, log4j, etc.)
+* Logcat (Android)
+* 
+He it's how it looks like:
 
 ![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9699889/4e45685a-53f1-11e5-98c2-c59b64711027.png)
 
