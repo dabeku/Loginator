@@ -1,28 +1,31 @@
 # Loginator
 The best way to display your logs
 
-Loginator is a simple log viewer that shows you logs in realtime:
+Loginator is a high performance log viewer that shows you logs in realtime:
 
 * Chainsaw (nlog, log4net, log4j, etc.)
 * Logcat (Android)
 
 He it's how it looks like:
 
-![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9699889/4e45685a-53f1-11e5-98c2-c59b64711027.png)
+![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9705227/1365c644-54be-11e5-9617-0cd99578ab07.png)
 
-## Loginator can do the following
+## Some cool features include
 
-* Activate/deactivate logging
-* Scroll to bottom
 * Limit the number of logs held in memory
-* Clear the log
 * Show details of a log like exception, namespace, etc.
+* Show/Hide logs based on application
 * Show/Hide logs based on namespace
+* Filter output based on log level
 
-## TODO
+## TODO (from most to least important)
 
+* If root is [ ] checked then all new children are also [ ] checked
 * Make protocol type configurable (chainsaw, logcat, etc.)
 * Make listening port configurable (currently: 7071)
+* Set max. number of logs per level AND application
+* Search function
+* Other data sources (database, file, etc.) via polling
 
 ## Chainsaw logging
 
@@ -49,5 +52,5 @@ cat <(/[path-to]/Android/sdk/platform-tools/adb -s [your-device-id] logcat) | nc
 
 ## Tested with
 
-* Chainsaw: NLog (.net), same machine
-* Logcat: Android logcat (default output format), remote machine
+* Chainsaw: NLog (.net), same machine (Windows 10)
+* Logcat: Android logcat (default output format), remote machine (Mac OSx, Windows 10)
