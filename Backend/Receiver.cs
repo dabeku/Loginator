@@ -68,6 +68,9 @@ namespace Backend {
 
                 if (LogReceived != null) {
                     foreach (Log log in logs) {
+                        if (log == Log.DEFAULT) {
+                            continue;
+                        }
                         LogReceived(this, new LogReceivedEventArgs(log));
                     }
                 }

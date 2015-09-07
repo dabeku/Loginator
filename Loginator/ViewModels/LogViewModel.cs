@@ -45,6 +45,8 @@ namespace LogApplication.ViewModels {
 
         public override string ToString() {
             StringBuilder sb = new StringBuilder();
+            sb.Append("Application: ");
+            sb.AppendLine(Application);
             sb.Append("Namespace: ");
             sb.AppendLine(Namespace);
             sb.Append("Message: ");

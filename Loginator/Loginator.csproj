@@ -85,7 +85,6 @@
     </Compile>
     <Compile Include="Controls\DependencyPropertyConstants.cs" />
     <Compile Include="Controls\GridViewColumnResize.cs" />
-    <Compile Include="Controls\ScrollToBottomBehavior.cs" />
     <Compile Include="Converter\LevelToForegroundConverter.cs" />
     <Compile Include="Converter\LogToTextConverter.cs" />
     <Compile Include="Converter\SingleLineTextConverter .cs" />

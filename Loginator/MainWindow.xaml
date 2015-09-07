@@ -1,12 +1,11 @@
 ﻿<Window x:Class="Loginator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:controls="clr-namespace:Loginator.Controls"
-        Title="Loginator" Height="600" Width="800">
-    <Grid>
+        Title="Loginator" Height="600" Width="800" MinHeight="600" MinWidth="800">
+    <Grid Margin="2">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
+            <RowDefinition Height="56" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -15,13 +14,20 @@
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-            <StackPanel Orientation="Horizontal">
-                <CheckBox Content="Is active" IsChecked="{Binding IsActive}" Margin="4,2,0,0"></CheckBox>
-                <CheckBox Content="Scroll to bottom" IsChecked="{Binding IsScrollingToBottom}" Margin="16,2,0,0"></CheckBox>
-                <Label Content="Number of logs per level" Width="160" Margin="16,0,0,0"></Label>
-                <TextBox Width="100" Text="{Binding NumberOfLogsPerLevel}"></TextBox>
-                <Button Content="Apply" Width="100" Margin="4,0,0,0" Command="{Binding UpdateNumberOfLogsPerLevelCommand}"></Button>
-                <Button Content="Clear" Width="100" Margin="4,0,0,0" Command="{Binding ClearLogCommand}"></Button>
+            <StackPanel Orientation="Vertical">
+                <DockPanel>
+                    <CheckBox Content="Is active" IsChecked="{Binding IsActive}" Margin="4,2,0,0"></CheckBox>
+                    <Label Content="Count per application per level" Width="200" Margin="16,0,0,0"></Label>
+                    <TextBox Width="100" Text="{Binding NumberOfLogsPerLevel}"></TextBox>
+                    <Button Content="Apply" Width="100" Margin="4,0,0,0" Command="{Binding UpdateNumberOfLogsPerLevelCommand}"></Button>
+                    <Button Content="Clear Logs" Width="100" Command="{Binding ClearLogsCommand}" HorizontalAlignment="Right"></Button>
+                </DockPanel>
+                <DockPanel>
+                    <Label Content="Search" Width="60"></Label>
+                    <TextBox Width="100" Text="{Binding SearchCriteria}"></TextBox>
+                    <Button Content="Apply" Width="100" Margin="4,0,0,0" Command="{Binding UpdateSearchCriteriaCommand}"></Button>
+                    <Button Content="Clear All" Width="100" Command="{Binding ClearAllCommand}" HorizontalAlignment="Right"></Button>
+                </DockPanel>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0">
@@ -40,9 +46,6 @@
                 SelectionMode="Single"
                 controls:GridViewColumnResize.Enabled="True"
                 >
-                <!--<i:Interaction.Behaviors>
-                    <controls:ScrollToBottomBehavior />
-                </i:Interaction.Behaviors>-->
                 <ListView.View>
                     <GridView AllowsColumnReorder="False">
                         <GridViewColumn Header="Timestamp" controls:GridViewColumnResize.Width="140">
@@ -136,14 +139,31 @@
                             <CheckBox Focusable="False" IsChecked="{Binding IsChecked}" VerticalAlignment="Center" />
                             <Label>
                                 <Label.Content>
-                                    <TextBlock>
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0} ({1})">
-                                                <Binding Path="Name" />
-                                                <Binding Path="Count" />
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=Name}">
+                                            <!--<TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} ({1})">
+                                                    <Binding Path="Name" />
+                                                    <Binding Path="Count" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>-->
+                                        </TextBlock>
+                                        <TextBlock Text=" ("/>
+                                        <TextBlock Text="{Binding Path=Count}"/>
+                                        <TextBlock Text=":"/>
+                                        <TextBlock Text="{Binding Path=CountTrace}" Foreground="DarkGray"/>
+                                        <TextBlock Text=","/>
+                                        <TextBlock Text="{Binding Path=CountDebug}" Foreground="Gray"/>
+                                        <TextBlock Text=","/>
+                                        <TextBlock Text="{Binding Path=CountInfo}" Foreground="Green"/>
+                                        <TextBlock Text=","/>
+                                        <TextBlock Text="{Binding Path=CountWarn}" Foreground="Orange"/>
+                                        <TextBlock Text=","/>
+                                        <TextBlock Text="{Binding Path=CountError}" Foreground="Red"/>
+                                        <TextBlock Text=","/>
+                                        <TextBlock Text="{Binding Path=CountFatal}" Foreground="DarkViolet"/>
+                                        <TextBlock Text=")"/>
+                                    </StackPanel>
                                 </Label.Content>
                             </Label>
                         </StackPanel>

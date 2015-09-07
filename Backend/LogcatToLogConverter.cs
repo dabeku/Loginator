@@ -63,8 +63,19 @@ namespace Backend {
                         log.Level = level;
                     }
 
+                    
                     string ns = line.Substring(indexOfTag + 1, indexOfMessage - indexOfTag - 1);
-                    log.Namespace = Constants.NAMESPACE_LOGCAT + Constants.NAMESPACE_SPLITTER + ns;
+
+                    int braceOpenIndex = ns.IndexOf("(");
+                    int braceCloseIndex = ns.IndexOf(")");
+                    if (braceOpenIndex != -1 && braceCloseIndex != -1 && braceOpenIndex < braceCloseIndex) {
+                        // Create the structure "Logcat.585.ActivityManager" out of "ActivityManager(  585)"
+                        log.Namespace = Constants.NAMESPACE_LOGCAT + Constants.NAMESPACE_SPLITTER + ns.Substring(braceOpenIndex + 1, braceCloseIndex - braceOpenIndex - 1).Trim() + Constants.NAMESPACE_SPLITTER + ns.Substring(0, braceOpenIndex);
+                    } else {
+                        // Leave the structure as it is: "ActivityManager(  585)"
+                        log.Namespace = Constants.NAMESPACE_LOGCAT + Constants.NAMESPACE_SPLITTER + ns;
+                    }
+                    
                     log.Message = line.Substring(indexOfMessage + 1).Trim();
                     if (!String.IsNullOrEmpty(log.Message)) {
                         logs.Add(log);

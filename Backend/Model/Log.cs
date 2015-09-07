@@ -26,9 +26,10 @@ namespace Backend.Model {
             Application = Constants.APPLICATION_GLOBAL;
         }
 
+        private static Log def = new Log();
         public static Log DEFAULT {
             get {
-                return new Log();
+                return def;
             }
         }
         
