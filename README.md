@@ -20,12 +20,9 @@ He it's how it looks like:
 
 ## TODO (from most to least important)
 
-* Remove scroll to bottom
-* If root is [ ] checked then all new children are also [ ] checked
+* Refactor UI to one line configuration
 * Make protocol type configurable (chainsaw, logcat, etc.)
 * Make listening port configurable (currently: 7071)
-* Set max. number of logs per level AND application
-* Search function
 * Other data sources (database, file, etc.) via polling
 
 ## Chainsaw logging
