@@ -8,7 +8,7 @@ Loginator is a high performance log viewer that shows you logs in realtime:
 
 He it's how it looks like:
 
-![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9705227/1365c644-54be-11e5-9617-0cd99578ab07.png)
+![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9740037/05d838c2-5653-11e5-83e4-9876122489cc.png)
 
 ## Some cool features include
 
