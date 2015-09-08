@@ -16,14 +16,13 @@ He it's how it looks like:
 * Show details of a log like exception, namespace, etc.
 * Show/Hide logs based on application
 * Show/Hide logs based on namespace
-* Filter output based on log level
+* Filter output based on log level and expressions
+* Configure log type and port
 
 ## TODO (from most to least important)
 
-* Refactor UI to one line configuration
-* Make protocol type configurable (chainsaw, logcat, etc.)
-* Make listening port configurable (currently: 7071)
 * Other data sources (database, file, etc.) via polling
+* Code refactoring (expressions, receiver)
 
 ## Chainsaw logging
 
