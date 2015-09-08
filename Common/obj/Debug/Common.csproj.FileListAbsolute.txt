@@ -1,5 +1,5 @@
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Debug\Common.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Debug\Common.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Debug\Common.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Debug\Common.pdb
-C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache

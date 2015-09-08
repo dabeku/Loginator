@@ -41,12 +41,18 @@
   <ItemGroup>
     <Compile Include="LogcatToLogConverter.cs" />
     <Compile Include="Events\LogReceivedEventArgs.cs" />
+    <Compile Include="Dao\ConfigurationDao.cs" />
+    <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\LogLevel.cs" />
     <Compile Include="Model\Log.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Receiver.cs" />
-    <Compile Include="UdpListener.cs" />
+    <Compile Include="Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="UdpState.cs" />
     <Compile Include="ChainsawToLogConverter.cs" />
   </ItemGroup>
@@ -55,6 +61,13 @@
       <Project>{43d3f45f-3f5a-4736-bdc0-50bc7f54f2bb}</Project>
       <Name>Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

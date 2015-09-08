@@ -9,75 +9,100 @@ using System.Xml;
 using System.Xml.Linq;
 using Backend.Events;
 using Backend.Model;
+using Common;
+using System.Net.NetworkInformation;
+using Common.Exceptions;
 
 namespace Backend {
 
     public class Receiver {
 
-        // TODO: Make configurable
-        private const string LOG_TYPE = "chainsaw";
+        private readonly static Receiver instance = new Receiver();
 
-        private const string LOG_TYPE_CHAINSAW = "chainsaw";
-        private const string LOG_TYPE_LOGCAT = "logcat";
+        public static Receiver Instance {
+            get { return instance; }
+        }
 
-        private const int LOCAL_PORT = 7071;
+        private LogType LogType { get; set; }
 
         private ChainsawToLogConverter ChainsawConverter { get; set; }
         private LogcatToLogConverter LogcatConverter { get; set; }
+        private UdpClient Client { get; set; }
 
         public event EventHandler<LogReceivedEventArgs> LogReceived;
 
-        public void Initialize() {
+        public Receiver() {
             ChainsawConverter = new ChainsawToLogConverter();
             LogcatConverter = new LogcatToLogConverter();
-
-            UdpClient Client = new UdpClient(LOCAL_PORT);
-            UdpState state = new UdpState(Client, new IPEndPoint(IPAddress.Any, 0));
-            Client.BeginReceive(new AsyncCallback(DataReceived), state);
-
-            // Wait for any key to terminate application
-            //Console.ReadKey();
-            //client.Close();
         }
-        
-        private void DataReceived(IAsyncResult ar) {
 
-            UdpClient c = (UdpClient)((UdpState)ar.AsyncState).u;
-            IPEndPoint wantedIpEndPoint = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
-            IPEndPoint receivedIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            Byte[] receiveBytes = c.EndReceive(ar, ref receivedIpEndPoint);
+        public void Initialize(Configuration configuration) {
 
-            // Check sender
-            bool isRightHost = (wantedIpEndPoint.Address.Equals(receivedIpEndPoint.Address)
-                               || wantedIpEndPoint.Address.Equals(IPAddress.Any));
-            bool isRightPort = (wantedIpEndPoint.Port == receivedIpEndPoint.Port)
-                               || wantedIpEndPoint.Port == 0;
-            if (isRightHost && isRightPort) {
-                string receivedText = Encoding.ASCII.GetString(receiveBytes);
-
-                IEnumerable<Log> logs;
-
-                if (LOG_TYPE == LOG_TYPE_CHAINSAW) {
-                    logs = ChainsawConverter.Convert(receivedText);
-                } else if (LOG_TYPE == LOG_TYPE_LOGCAT) {
-                    logs = LogcatConverter.Convert(receivedText);
-                }
-
-                //Console.WriteLine("Parsed (Level): " + log.Level);
-                //Console.WriteLine("Parsed (Message): " + log.Message);
-
-                if (LogReceived != null) {
-                    foreach (Log log in logs) {
-                        if (log == Log.DEFAULT) {
-                            continue;
-                        }
-                        LogReceived(this, new LogReceivedEventArgs(log));
-                    }
-                }
+            LogType = configuration.LogType;
+            int port = 0;
+            if (LogType == LogType.CHAINSAW) {
+                port = configuration.PortChainsaw;
+            } else if (LogType == LogType.LOGCAT) {
+                port = configuration.PortLogcat;
+            }
+            if (Client != null) {
+                Client.Close();
             }
 
-            // Restart listening for udp data packages
-            c.BeginReceive(new AsyncCallback(DataReceived), ar.AsyncState);
+            bool isPortAlreadyInUse = (from p
+                                 in IPGlobalProperties.GetIPGlobalProperties().GetActiveUdpListeners()
+                                 where p.Port == port
+                                 select p).Count() == 1;
+
+            if (isPortAlreadyInUse) {
+                throw new LoginatorException("Port " + port + " is already in use");
+            }
+
+            Client = new UdpClient(port);
+            UdpState state = new UdpState(Client, new IPEndPoint(IPAddress.Any, 0));
+            Client.BeginReceive(new AsyncCallback(DataReceived), state);
+        }
+
+        private void DataReceived(IAsyncResult ar) {
+
+            try {
+                UdpClient c = (UdpClient)((UdpState)ar.AsyncState).u;
+                IPEndPoint wantedIpEndPoint = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
+                IPEndPoint receivedIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                Byte[] receiveBytes = c.EndReceive(ar, ref receivedIpEndPoint);
+
+                // Check sender
+                bool isRightHost = (wantedIpEndPoint.Address.Equals(receivedIpEndPoint.Address)
+                                   || wantedIpEndPoint.Address.Equals(IPAddress.Any));
+                bool isRightPort = (wantedIpEndPoint.Port == receivedIpEndPoint.Port)
+                                   || wantedIpEndPoint.Port == 0;
+                if (isRightHost && isRightPort) {
+                    string receivedText = Encoding.ASCII.GetString(receiveBytes);
+
+                    IEnumerable<Log> logs = new List<Log>();
+
+                    if (LogType == LogType.CHAINSAW) {
+                        logs = ChainsawConverter.Convert(receivedText);
+                    }
+                    else if (LogType == LogType.LOGCAT) {
+                        logs = LogcatConverter.Convert(receivedText);
+                    }
+
+                    if (LogReceived != null) {
+                        foreach (Log log in logs) {
+                            if (log == Log.DEFAULT) {
+                                continue;
+                            }
+                            LogReceived(this, new LogReceivedEventArgs(log));
+                        }
+                    }
+                }
+
+                // Restart listening for udp data packages
+                c.BeginReceive(new AsyncCallback(DataReceived), ar.AsyncState);
+            } catch (Exception e) {
+                Console.WriteLine("Could not read package: " + e);
+            }
         }
     }
 }

@@ -17,6 +17,13 @@
         </Style>
         <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource BaseStyle}">
             <Setter Property="Height" Value="26" />
+            <Setter Property="Margin" Value="0,2,0,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="Height" Value="26" />
+            <Setter Property="Margin" Value="0,2,0,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
@@ -27,6 +34,7 @@
         <converter:LevelToForegroundConverter x:Key="LevelToForegroundConverter"></converter:LevelToForegroundConverter>
         <converter:SingleLineTextConverter x:Key="SingleLineTextConverter"></converter:SingleLineTextConverter>
         <converter:LogToTextConverter x:Key="LogToTextConverter"></converter:LogToTextConverter>
+        <converter:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter"></converter:RadioButtonCheckedConverter>
 
     </Application.Resources>
 </Application>

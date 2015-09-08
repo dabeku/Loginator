@@ -16,10 +16,14 @@ namespace LogApplication.ViewModels {
     using System.Threading;
     using Backend.Model;
     using Common;
+    using Loginator;
+    using Backend.Manager;
 
     public class LoginatorViewModel : INotifyPropertyChanged {
 
         private readonly static LoginatorViewModel instance = new LoginatorViewModel();
+
+        private ConfigurationDao ConfigurationDao { get; set; }
 
         private const int TIME_INTERVAL_IN_MILLISECONDS = 1000;
         private const int DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL = 1000;
@@ -60,6 +64,15 @@ namespace LogApplication.ViewModels {
             }
         }
 
+        private bool isExpression;
+        public bool IsExpression {
+            get { return isExpression; }
+            set {
+                isExpression = value;
+                OnPropertyChanged("IsExpression");
+            }
+        }
+
         private LogViewModel selectedLog;
         public LogViewModel SelectedLog {
             get { return selectedLog; }
@@ -79,12 +92,15 @@ namespace LogApplication.ViewModels {
             IsActive = true;
             NumberOfLogsPerLevel = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
             numberOfLogsPerApplicationAndLevelInternal = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
+            ConfigurationDao = new ConfigurationDao();
             Logs = new ObservableRangeCollection<LogViewModel>();
             LogsToInsert = new List<LogViewModel>();
             Namespaces = new ObservableCollection<NamespaceViewModel>();
             Applications = new ObservableCollection<ApplicationViewModel>();
-            Receiver = new Receiver();
-            Receiver.Initialize();
+
+            // TODO: Put this in Backend
+            Receiver = Receiver.Instance;
+            Receiver.Initialize(ConfigurationDao.Read());
             Receiver.LogReceived += Receiver_LogReceived;
             Timer = new Timer(Callback, null, TIME_INTERVAL_IN_MILLISECONDS, Timeout.Infinite);
         }
@@ -134,49 +150,56 @@ namespace LogApplication.ViewModels {
         }
 
         private void UpdateLogs() {
+            try {
+                var logsToInsert = LogsToInsert.OrderBy(m => m.Timestamp);
+                Logs.AddRangeAtStart(logsToInsert);
+                LogsToInsert.Clear();
 
-            var logsToInsert = LogsToInsert.OrderBy(m => m.Timestamp);
-            Logs.AddRangeAtStart(logsToInsert);
-            LogsToInsert.Clear();
-
-            var applications = new List<string>(Logs.Select(m => m.Application).Distinct());
-            var levels = new List<string>(Logs.Select(m => m.Level).Distinct());
-            foreach (var application in applications) {
-                foreach (var level in levels) {
-                    var logsByApplicationAndLevel = Logs.Where(m => m.Level == level && m.Application == application);
-                    int logCountByApplicationAndLevel = logsByApplicationAndLevel.Count();
-                    while (logCountByApplicationAndLevel > numberOfLogsPerApplicationAndLevelInternal) {
-                        Logs.Remove(logsByApplicationAndLevel.ElementAt(logsByApplicationAndLevel.Count() - 1));
-                        logsByApplicationAndLevel = Logs.Where(m => m.Level == level && m.Application == application);
-                        logCountByApplicationAndLevel = logsByApplicationAndLevel.Count();
+                var applications = new List<string>(Logs.Select(m => m.Application).Distinct());
+                var levels = new List<string>(Logs.Select(m => m.Level).Distinct());
+                foreach (var application in applications) {
+                    foreach (var level in levels) {
+                        var logsByApplicationAndLevel = Logs.Where(m => m.Level == level && m.Application == application);
+                        int logCountByApplicationAndLevel = logsByApplicationAndLevel.Count();
+                        while (logCountByApplicationAndLevel > numberOfLogsPerApplicationAndLevelInternal) {
+                            Logs.Remove(logsByApplicationAndLevel.ElementAt(logsByApplicationAndLevel.Count() - 1));
+                            logsByApplicationAndLevel = Logs.Where(m => m.Level == level && m.Application == application);
+                            logCountByApplicationAndLevel = logsByApplicationAndLevel.Count();
+                        }
                     }
                 }
+            } catch (Exception e) {
+                Console.WriteLine("Could not update logs: " + e);
             }
         }
 
         private void UpdateNamespaces() {
-            foreach (var log in Logs) {
-                // Example: Verbosus.VerbTeX.View
-                string nsLogFull = log.Namespace;
-                // Example: Verbosus
-                string nsLogPart = nsLogFull.Split(new string[] { Constants.NAMESPACE_SPLITTER }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-                // Try to get existing namespace with name Verbosus
-                var ns = Namespaces.FirstOrDefault(m => m.Name == nsLogPart);
-                if (ns == null) {
-                    ns = new NamespaceViewModel(nsLogPart);
-                    Namespaces.Add(ns);
+            try {
+                foreach (var log in Logs) {
+                    // Example: Verbosus.VerbTeX.View
+                    string nsLogFull = log.Namespace;
+                    // Example: Verbosus
+                    string nsLogPart = nsLogFull.Split(new string[] { Constants.NAMESPACE_SPLITTER }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                    // Try to get existing namespace with name Verbosus
+                    var ns = Namespaces.FirstOrDefault(m => m.Name == nsLogPart);
+                    if (ns == null) {
+                        ns = new NamespaceViewModel(nsLogPart);
+                        Namespaces.Add(ns);
+                    }
+                    HandleNamespace(ns, nsLogFull.Substring(nsLogFull.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
                 }
-                HandleNamespace(ns, nsLogFull.Substring(nsLogFull.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
-            }
 
-            foreach (var ns in Namespaces) {
-                ResetAllCount(ns);
-            }
-
-            foreach (var log in Logs) {
                 foreach (var ns in Namespaces) {
-                    HandleLogVisibilityByNamespace(log, ns, ns.Name);
+                    ResetAllCount(ns);
                 }
+
+                foreach (var log in Logs) {
+                    foreach (var ns in Namespaces) {
+                        HandleLogVisibilityByNamespace(log, ns, ns.Name);
+                    }
+                }
+            } catch (Exception e) {
+                Console.WriteLine("Could not update namespaces: " + e);
             }
         }
 
@@ -200,12 +223,16 @@ namespace LogApplication.ViewModels {
         }
 
         private void UpdateApplications() {
-            foreach (var log in Logs) {
-                var application = Applications.FirstOrDefault(m => m.Name == log.Application);
-                if (application == null) {
-                    application = new ApplicationViewModel(log.Application);
-                    Applications.Add(application);
+            try {
+                foreach (var log in Logs) {
+                    var application = Applications.FirstOrDefault(m => m.Name == log.Application);
+                    if (application == null) {
+                        application = new ApplicationViewModel(log.Application);
+                        Applications.Add(application);
+                    }
                 }
+            } catch (Exception e) {
+                Console.WriteLine("Could not update applications: " + e);
             }
         }
 
@@ -253,11 +280,7 @@ namespace LogApplication.ViewModels {
                         if (application != null &&
                             application.IsActive &&
                             LogLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel) &&
-                            (String.IsNullOrEmpty(searchCriteriaInternal) ||
-                                log.Application.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant()) ||
-                                log.Namespace.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant()) ||
-                                log.Message.ToLowerInvariant().Contains(searchCriteriaInternal) ||
-                                (!String.IsNullOrEmpty(log.Exception) && log.Exception.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())))) {
+                            IsLogInSearchCriteria(log)) {
                             log.IsVisible = true;
                         } else {
                             log.IsVisible = false;
@@ -269,6 +292,80 @@ namespace LogApplication.ViewModels {
                     HandleLogVisibilityByNamespace(log, child, currentNamespace + Constants.NAMESPACE_SPLITTER + child.Name);
                 }
             }
+        }
+
+        private bool IsLogInSearchCriteria(LogViewModel log) {
+            try {
+                // Default
+                if (String.IsNullOrEmpty(searchCriteriaInternal)) {
+                    return true;
+                }
+
+                // Search
+                if (!IsExpression) {
+                    if ((!String.IsNullOrEmpty(log.Application) && log.Application.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Namespace) && log.Namespace.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Message) && log.Message.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Exception) && log.Exception.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant()))) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                // Expression
+                // TODO: Refactor this
+                Operator op = Operator.NONE;
+                string operand = null;
+                bool isOperandStart = false;
+
+                for (int i = 0; i < searchCriteriaInternal.Length; i++) {
+                    if (searchCriteriaInternal[i] == '!') {
+                        op = Operator.NEGATE;
+                        continue;
+                    }
+                    if (searchCriteriaInternal[i] == '"') {
+                        if (!isOperandStart) {
+                            isOperandStart = true;
+                        }
+                        else if (isOperandStart) {
+                            isOperandStart = false;
+                        }
+                        continue;
+                    }
+                    operand += searchCriteriaInternal[i];
+                }
+
+                if (op == Operator.NEGATE) {
+                    if ((!String.IsNullOrEmpty(log.Application) && log.Application.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Namespace) && log.Namespace.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Message) && log.Message.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Exception) && log.Exception.ToLowerInvariant().Contains(operand.ToLowerInvariant()))) {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+                else {
+                    if ((!String.IsNullOrEmpty(log.Application) && log.Application.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Namespace) && log.Namespace.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Message) && log.Message.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Exception) && log.Exception.ToLowerInvariant().Contains(operand.ToLowerInvariant()))) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            } catch (Exception e) {
+                Console.WriteLine("Invalid search criteria: " + e);
+                return false;
+            }
+        }
+
+        private enum Operator {
+            NONE,
+            NEGATE
         }
 
         public void Update() {
@@ -351,8 +448,20 @@ namespace LogApplication.ViewModels {
             });
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private ICommand openConfigurationCommand;
+        public ICommand OpenConfigurationCommand {
+            get {
+                if (openConfigurationCommand == null) {
+                    openConfigurationCommand = new DelegateCommand(HandleOpenConfigurationCommand);
+                }
+                return openConfigurationCommand;
+            }
+        }
+        public void HandleOpenConfigurationCommand(object one) {
+            new ConfigurationWindow().Show();
+        }
 
+        public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string property) {
             if (PropertyChanged != null) {
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
