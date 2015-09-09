@@ -53,6 +53,12 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.1.0\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\packages\structuremap.3.1.6.186\lib\net40\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap.Net4">
+      <HintPath>..\packages\structuremap.3.1.6.186\lib\net40\StructureMap.Net4.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -77,16 +83,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Bootstrapper\DiBootstrapperFrontend.cs" />
     <Compile Include="ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\RadioButtonCheckedConverter.cs" />
     <Compile Include="ViewModels\ConfigurationViewModel.cs" />
-    <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\LogViewModel.cs" />
     <Compile Include="ViewModels\LoginatorViewModel.cs" />
     <Compile Include="ViewModels\NamespaceViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Page Include="ConfigurationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

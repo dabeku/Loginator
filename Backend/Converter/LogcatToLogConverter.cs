@@ -8,10 +8,17 @@ using System.Xml;
 using System.Xml.Linq;
 using Backend.Model;
 using Common;
+using NLog;
 
-namespace Backend {
+namespace Backend.Converter {
 
-    public class LogcatToLogConverter {
+    public class LogcatToLogConverter : ILogConverter {
+
+        private ILogger Logger { get; set; }
+
+        public LogcatToLogConverter() {
+            Logger = LogManager.GetCurrentClassLogger();
+        }
 
         public IEnumerable<Log> Convert(string text) {
             if (text == null) {
@@ -38,27 +45,27 @@ namespace Backend {
 
                     Log log = new Log();
                     if (indexOfTag == -1) {
-                        log.Level = LogLevel.NOT_SET;
+                        log.Level = LoggingLevel.NOT_SET;
                     }
                     else {
                         string level = line.Substring(0, indexOfTag);
                         if (level == "V") {
-                            level = LogLevel.TRACE;
+                            level = LoggingLevel.TRACE;
                         }
                         else if (level == "D") {
-                            level = LogLevel.DEBUG;
+                            level = LoggingLevel.DEBUG;
                         }
                         else if (level == "I") {
-                            level = LogLevel.INFO;
+                            level = LoggingLevel.INFO;
                         }
                         else if (level == "W") {
-                            level = LogLevel.WARN;
+                            level = LoggingLevel.WARN;
                         }
                         else if (level == "E") {
-                            level = LogLevel.ERROR;
+                            level = LoggingLevel.ERROR;
                         }
                         else if (level == "F") {
-                            level = LogLevel.FATAL;
+                            level = LoggingLevel.FATAL;
                         }
                         log.Level = level;
                     }
@@ -85,7 +92,7 @@ namespace Backend {
                 }
                 return logs;
             } catch (Exception e) {
-                Console.WriteLine("Could not deserialize logcat log: " + text + ". Exception: " + e);
+                Logger.Error(e, "Could not read logcat data");
             }
 
             return new Log[] { Log.DEFAULT };

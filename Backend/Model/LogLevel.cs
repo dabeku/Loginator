@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Backend.Model {
-    public class LogLevel {
+    public class LoggingLevel {
 
         public string Id { get; private set; }
         public string Name { get; private set; }
@@ -17,7 +17,7 @@ namespace Backend.Model {
         public const string ERROR = "ERROR";
         public const string FATAL = "FATAL";
 
-        public LogLevel(string name) {
+        public LoggingLevel(string name) {
             Id = name;
             Name = name;
         }

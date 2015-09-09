@@ -1,4 +1,5 @@
-﻿using Backend.Model;
+﻿using Backend.Dao;
+using Backend.Model;
 using Common;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Backend.Manager {
-    public class ConfigurationDao {
+    public class ConfigurationDaoSettings : IConfigurationDao {
+
         public Configuration Read() {
             Configuration configuration = new Configuration();
 

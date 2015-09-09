@@ -12,29 +12,18 @@ using Backend.Model;
 using Common;
 using System.Net.NetworkInformation;
 using Common.Exceptions;
+using Backend.Converter;
+using Common.Configuration;
 
 namespace Backend {
 
     public class Receiver {
 
-        private readonly static Receiver instance = new Receiver();
-
-        public static Receiver Instance {
-            get { return instance; }
-        }
-
         private LogType LogType { get; set; }
-
-        private ChainsawToLogConverter ChainsawConverter { get; set; }
-        private LogcatToLogConverter LogcatConverter { get; set; }
         private UdpClient Client { get; set; }
+        private ILogConverter Converter { get; set; }
 
         public event EventHandler<LogReceivedEventArgs> LogReceived;
-
-        public Receiver() {
-            ChainsawConverter = new ChainsawToLogConverter();
-            LogcatConverter = new LogcatToLogConverter();
-        }
 
         public void Initialize(Configuration configuration) {
 
@@ -42,8 +31,10 @@ namespace Backend {
             int port = 0;
             if (LogType == LogType.CHAINSAW) {
                 port = configuration.PortChainsaw;
+                Converter = IoC.Get<ChainsawToLogConverter>();
             } else if (LogType == LogType.LOGCAT) {
                 port = configuration.PortLogcat;
+                Converter = IoC.Get<LogcatToLogConverter>();
             }
             if (Client != null) {
                 Client.Close();
@@ -55,7 +46,7 @@ namespace Backend {
                                  select p).Count() == 1;
 
             if (isPortAlreadyInUse) {
-                throw new LoginatorException("Port " + port + " is already in use");
+                throw new LoginatorException("Port " + port + " is already in use.");
             }
 
             Client = new UdpClient(port);
@@ -78,16 +69,7 @@ namespace Backend {
                                    || wantedIpEndPoint.Port == 0;
                 if (isRightHost && isRightPort) {
                     string receivedText = Encoding.ASCII.GetString(receiveBytes);
-
-                    IEnumerable<Log> logs = new List<Log>();
-
-                    if (LogType == LogType.CHAINSAW) {
-                        logs = ChainsawConverter.Convert(receivedText);
-                    }
-                    else if (LogType == LogType.LOGCAT) {
-                        logs = LogcatConverter.Convert(receivedText);
-                    }
-
+                    IEnumerable<Log> logs = Converter.Convert(receivedText);
                     if (LogReceived != null) {
                         foreach (Log log in logs) {
                             if (log == Log.DEFAULT) {
@@ -102,6 +84,7 @@ namespace Backend {
                 c.BeginReceive(new AsyncCallback(DataReceived), ar.AsyncState);
             } catch (Exception e) {
                 Console.WriteLine("Could not read package: " + e);
+                //throw new LoginatorException("Could not read data. Please restart application.");
             }
         }
     }

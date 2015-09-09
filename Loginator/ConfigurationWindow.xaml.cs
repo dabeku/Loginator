@@ -20,12 +20,7 @@ namespace Loginator {
     public partial class ConfigurationWindow : Window {
         public ConfigurationWindow() {
             InitializeComponent();
-            DataContextChanged += Configuration_DataContextChanged;
-            DataContext = new ConfigurationViewModel();
-        }
-
-        private void Configuration_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            ConfigurationViewModel vm = e.NewValue as ConfigurationViewModel;
+            ConfigurationViewModel vm = DataContext as ConfigurationViewModel;
             if (vm != null) {
                 vm.CloseAction = Close;
             }

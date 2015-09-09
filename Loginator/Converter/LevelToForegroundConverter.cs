@@ -13,17 +13,17 @@ namespace Loginator.Converter {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             if (value != null) {
                 string level = value.ToString();
-                if (level == LogLevel.TRACE) {
+                if (level == LoggingLevel.TRACE) {
                     return new SolidColorBrush(Colors.DarkGray);
-                } else if (level == LogLevel.DEBUG) {
+                } else if (level == LoggingLevel.DEBUG) {
                     return new SolidColorBrush(Colors.Gray);
-                } else if (level == LogLevel.INFO) {
+                } else if (level == LoggingLevel.INFO) {
                     return new SolidColorBrush(Colors.Green);
-                } else if (level == LogLevel.WARN) {
+                } else if (level == LoggingLevel.WARN) {
                     return new SolidColorBrush(Colors.Orange);
-                } else if (level == LogLevel.ERROR) {
+                } else if (level == LoggingLevel.ERROR) {
                     return new SolidColorBrush(Colors.Red);
-                } else if (level == LogLevel.FATAL) {
+                } else if (level == LoggingLevel.FATAL) {
                     return new SolidColorBrush(Colors.DarkViolet);
                 }
             }

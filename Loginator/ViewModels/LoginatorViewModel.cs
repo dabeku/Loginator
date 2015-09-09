@@ -18,22 +18,19 @@ namespace LogApplication.ViewModels {
     using Common;
     using Loginator;
     using Backend.Manager;
+    using GalaSoft.MvvmLight.Command;
+    using Common.Configuration;
+    using Backend.Dao;
 
     public class LoginatorViewModel : INotifyPropertyChanged {
 
-        private readonly static LoginatorViewModel instance = new LoginatorViewModel();
-
-        private ConfigurationDao ConfigurationDao { get; set; }
+        private IConfigurationDao ConfigurationDao { get; set; }
 
         private const int TIME_INTERVAL_IN_MILLISECONDS = 1000;
         private const int DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL = 1000;
         private static object SYNC_OBJECT = new Object();
         private Receiver Receiver { get; set; }
         private Timer Timer { get; set; }
-
-        public static LoginatorViewModel Instance {
-            get { return instance; }
-        }
 
         private bool isActive;
         public bool IsActive {
@@ -64,12 +61,12 @@ namespace LogApplication.ViewModels {
             }
         }
 
-        private bool isExpression;
-        public bool IsExpression {
-            get { return isExpression; }
+        private bool isInverted;
+        public bool IsInverted {
+            get { return isInverted; }
             set {
-                isExpression = value;
-                OnPropertyChanged("IsExpression");
+                isInverted = value;
+                OnPropertyChanged("IsInverted");
             }
         }
 
@@ -88,21 +85,22 @@ namespace LogApplication.ViewModels {
         public ObservableCollection<NamespaceViewModel> Namespaces { get; set; }
         public ObservableCollection<ApplicationViewModel> Applications { get; set; }
 
-        private LoginatorViewModel() {
+        public LoginatorViewModel(IConfigurationDao configurationDao) {
+            ConfigurationDao = configurationDao;
             IsActive = true;
             NumberOfLogsPerLevel = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
             numberOfLogsPerApplicationAndLevelInternal = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
-            ConfigurationDao = new ConfigurationDao();
             Logs = new ObservableRangeCollection<LogViewModel>();
             LogsToInsert = new List<LogViewModel>();
             Namespaces = new ObservableCollection<NamespaceViewModel>();
             Applications = new ObservableCollection<ApplicationViewModel>();
+        }
 
-            // TODO: Put this in Backend
-            Receiver = Receiver.Instance;
-            Receiver.Initialize(ConfigurationDao.Read());
+        public void StartListener() {
+            Receiver = IoC.Get<Receiver>();
             Receiver.LogReceived += Receiver_LogReceived;
             Timer = new Timer(Callback, null, TIME_INTERVAL_IN_MILLISECONDS, Timeout.Infinite);
+            Receiver.Initialize(ConfigurationDao.Read());
         }
 
         private void Callback(Object state) {
@@ -141,7 +139,7 @@ namespace LogApplication.ViewModels {
                     }
                     LogViewModel log = ToLogViewModel(e.Log);
                     var application = Applications.FirstOrDefault(m => m.Name == log.Application);
-                    if (application != null && (!application.IsActive || !LogLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel))) {
+                    if (application != null && (!application.IsActive || !LoggingLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel))) {
                         return;
                     }
                     LogsToInsert.Add(log);
@@ -255,22 +253,22 @@ namespace LogApplication.ViewModels {
                 if (log.Namespace == nsAbsolute) {
                     child.Count++;
                     switch (log.Level) {
-                        case LogLevel.TRACE:
+                        case LoggingLevel.TRACE:
                             child.CountTrace++;
                             break;
-                        case LogLevel.DEBUG:
+                        case LoggingLevel.DEBUG:
                             child.CountDebug++;
                             break;
-                        case LogLevel.INFO:
+                        case LoggingLevel.INFO:
                             child.CountInfo++;
                             break;
-                        case LogLevel.WARN:
+                        case LoggingLevel.WARN:
                             child.CountWarn++;
                             break;
-                        case LogLevel.ERROR:
+                        case LoggingLevel.ERROR:
                             child.CountError++;
                             break;
-                        case LogLevel.FATAL:
+                        case LoggingLevel.FATAL:
                             child.CountFatal++;
                             break;
                     }
@@ -279,7 +277,7 @@ namespace LogApplication.ViewModels {
                         var application = Applications.FirstOrDefault(m => m.Name == log.Application);
                         if (application != null &&
                             application.IsActive &&
-                            LogLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel) &&
+                            LoggingLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel) &&
                             IsLogInSearchCriteria(log)) {
                             log.IsVisible = true;
                         } else {
@@ -302,7 +300,7 @@ namespace LogApplication.ViewModels {
                 }
 
                 // Search
-                if (!IsExpression) {
+                if (!IsInverted) {
                     if ((!String.IsNullOrEmpty(log.Application) && log.Application.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
                         (!String.IsNullOrEmpty(log.Namespace) && log.Namespace.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
                         (!String.IsNullOrEmpty(log.Message) && log.Message.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
@@ -310,62 +308,19 @@ namespace LogApplication.ViewModels {
                         return true;
                     }
                     return false;
-                }
-
-                // Expression
-                // TODO: Refactor this
-                Operator op = Operator.NONE;
-                string operand = null;
-                bool isOperandStart = false;
-
-                for (int i = 0; i < searchCriteriaInternal.Length; i++) {
-                    if (searchCriteriaInternal[i] == '!') {
-                        op = Operator.NEGATE;
-                        continue;
-                    }
-                    if (searchCriteriaInternal[i] == '"') {
-                        if (!isOperandStart) {
-                            isOperandStart = true;
-                        }
-                        else if (isOperandStart) {
-                            isOperandStart = false;
-                        }
-                        continue;
-                    }
-                    operand += searchCriteriaInternal[i];
-                }
-
-                if (op == Operator.NEGATE) {
-                    if ((!String.IsNullOrEmpty(log.Application) && log.Application.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Namespace) && log.Namespace.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Message) && log.Message.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Exception) && log.Exception.ToLowerInvariant().Contains(operand.ToLowerInvariant()))) {
+                } else {
+                    if ((!String.IsNullOrEmpty(log.Application) && log.Application.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Namespace) && log.Namespace.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Message) && log.Message.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
+                        (!String.IsNullOrEmpty(log.Exception) && log.Exception.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant()))) {
                         return false;
                     }
-                    else {
-                        return true;
-                    }
-                }
-                else {
-                    if ((!String.IsNullOrEmpty(log.Application) && log.Application.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Namespace) && log.Namespace.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Message) && log.Message.ToLowerInvariant().Contains(operand.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Exception) && log.Exception.ToLowerInvariant().Contains(operand.ToLowerInvariant()))) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+                    return true;
                 }
             } catch (Exception e) {
                 Console.WriteLine("Invalid search criteria: " + e);
                 return false;
             }
-        }
-
-        private enum Operator {
-            NONE,
-            NEGATE
         }
 
         public void Update() {
@@ -380,12 +335,15 @@ namespace LogApplication.ViewModels {
         public ICommand ClearLogsCommand {
             get {
                 if (clearLogsCommand == null) {
-                    clearLogsCommand = new DelegateCommand(HandleClearLogsCommand);
+                    clearLogsCommand = new RelayCommand<LoginatorViewModel>(ClearLogs, CanClearLogs);
                 }
                 return clearLogsCommand;
             }
         }
-        public void HandleClearLogsCommand(object one) {
+        private bool CanClearLogs(LoginatorViewModel loginator) {
+            return true;
+        }
+        public void ClearLogs(LoginatorViewModel loginator) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
                 lock (SYNC_OBJECT) {
                     Logs.Clear();
@@ -397,12 +355,15 @@ namespace LogApplication.ViewModels {
         public ICommand ClearAllCommand {
             get {
                 if (clearAllCommand == null) {
-                    clearAllCommand = new DelegateCommand(HandleClearAllCommand);
+                    clearAllCommand = new RelayCommand<LoginatorViewModel>(ClearAll, CanClearAll);
                 }
                 return clearAllCommand;
             }
         }
-        public void HandleClearAllCommand(object one) {
+        private bool CanClearAll(LoginatorViewModel loginator) {
+            return true;
+        }
+        public void ClearAll(LoginatorViewModel loginator) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
                 lock (SYNC_OBJECT) {
                     Logs.Clear();
@@ -416,12 +377,15 @@ namespace LogApplication.ViewModels {
         public ICommand UpdateNumberOfLogsPerLevelCommand {
             get {
                 if (updateNumberOfLogsPerLevelCommand == null) {
-                    updateNumberOfLogsPerLevelCommand = new DelegateCommand(HandleUpdateNumberOfLogsPerLevelCommand);
+                    updateNumberOfLogsPerLevelCommand = new RelayCommand<LoginatorViewModel>(UpdateNumberOfLogsPerLevel, CanUpdateNumberOfLogsPerLevel);
                 }
                 return updateNumberOfLogsPerLevelCommand;
             }
         }
-        public void HandleUpdateNumberOfLogsPerLevelCommand(object one) {
+        private bool CanUpdateNumberOfLogsPerLevel(LoginatorViewModel loginator) {
+            return true;
+        }
+        public void UpdateNumberOfLogsPerLevel(LoginatorViewModel loginator) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
                 lock (SYNC_OBJECT) {
                     numberOfLogsPerApplicationAndLevelInternal = NumberOfLogsPerLevel;
@@ -434,12 +398,15 @@ namespace LogApplication.ViewModels {
         public ICommand UpdateSearchCriteriaCommand {
             get {
                 if (updateSearchCriteriaCommand == null) {
-                    updateSearchCriteriaCommand = new DelegateCommand(HandleUpdateSearchCriteriaCommand);
+                    updateSearchCriteriaCommand = new RelayCommand<LoginatorViewModel>(UpdateSearchCriteria, CanUpdateSearchCriteria);
                 }
                 return updateSearchCriteriaCommand;
             }
         }
-        public void HandleUpdateSearchCriteriaCommand(object one) {
+        private bool CanUpdateSearchCriteria(LoginatorViewModel loginator) {
+            return true;
+        }
+        public void UpdateSearchCriteria(LoginatorViewModel loginator) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
                 lock (SYNC_OBJECT) {
                     searchCriteriaInternal = SearchCriteria;
@@ -452,12 +419,15 @@ namespace LogApplication.ViewModels {
         public ICommand OpenConfigurationCommand {
             get {
                 if (openConfigurationCommand == null) {
-                    openConfigurationCommand = new DelegateCommand(HandleOpenConfigurationCommand);
+                    openConfigurationCommand = new RelayCommand<LoginatorViewModel>(OpenConfiguration, CanOpenConfiguration);
                 }
                 return openConfigurationCommand;
             }
         }
-        public void HandleOpenConfigurationCommand(object one) {
+        private bool CanOpenConfiguration(LoginatorViewModel loginator) {
+            return true;
+        }
+        public void OpenConfiguration(LoginatorViewModel loginator) {
             new ConfigurationWindow().Show();
         }
 

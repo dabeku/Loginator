@@ -1,7 +1,9 @@
 ﻿using Backend;
+using Backend.Dao;
 using Backend.Manager;
 using Backend.Model;
 using Common;
+using Common.Configuration;
 using GalaSoft.MvvmLight.Command;
 using Loginator.Properties;
 using System;
@@ -18,7 +20,7 @@ namespace Loginator.ViewModels {
 
     public class ConfigurationViewModel : INotifyPropertyChanged {
 
-        private ConfigurationDao ConfigurationDao { get; set; }
+        private IConfigurationDao ConfigurationDao { get; set; }
 
         private LogType logType;
         public LogType LogType {
@@ -49,8 +51,8 @@ namespace Loginator.ViewModels {
 
         public Action CloseAction { get; set; }
 
-        public ConfigurationViewModel() {
-            ConfigurationDao = new ConfigurationDao();
+        public ConfigurationViewModel(IConfigurationDao configurationDao) {
+            ConfigurationDao = configurationDao;
             Configuration configuration = ConfigurationDao.Read();
             LogType = configuration.LogType;
             PortChainsaw = configuration.PortChainsaw.ToString();
@@ -85,16 +87,13 @@ namespace Loginator.ViewModels {
         }
         private void AcceptChanges(ConfigurationViewModel serverRule) {
             try {
-                // Write to config file
                 Configuration configuration = new Configuration() {
                     LogType = LogType,
                     PortChainsaw = Convert.ToInt32(PortChainsaw),
                     PortLogcat = Convert.ToInt32(PortLogcat)
                 };
                 ConfigurationDao.Write(configuration);
-
-                Receiver.Instance.Initialize(configuration);
-
+                IoC.Get<Receiver>().Initialize(configuration);
                 CloseAction();
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Stop, MessageBoxResult.OK);

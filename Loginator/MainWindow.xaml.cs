@@ -1,4 +1,6 @@
-﻿using Backend.Model;
+﻿using Backend;
+using Backend.Model;
+using Common.Configuration;
 using GalaSoft.MvvmLight.Threading;
 using LogApplication.ViewModels;
 using System;
@@ -30,8 +32,14 @@ namespace Loginator {
 
         public MainWindow() {
             InitializeComponent();
-            DispatcherHelper.Initialize();
-            DataContext = LoginatorViewModel.Instance;
+            LoginatorViewModel vm = DataContext as LoginatorViewModel;
+            if (vm != null) {
+                try {
+                    vm.StartListener();
+                } catch (Exception ex) {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Stop, MessageBoxResult.OK);
+                }
+            }
         }
     }
 }
