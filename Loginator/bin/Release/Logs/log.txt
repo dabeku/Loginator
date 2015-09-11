@@ -1,0 +1,8 @@
+2015-09-11 16:23:32:733 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-09-11 16:24:34:580 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-09-11 16:35:12:669 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-09-11 16:40:41:006 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-09-11 16:41:34:670 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-09-11 16:42:22:521 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-09-11 16:42:46:011 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-09-11 16:43:06:577 | Loginator.App | Info | [OnStartup] Application successfully started | 

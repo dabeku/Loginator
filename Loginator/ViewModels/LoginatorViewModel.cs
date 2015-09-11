@@ -21,14 +21,19 @@ namespace LogApplication.ViewModels {
     using GalaSoft.MvvmLight.Command;
     using Common.Configuration;
     using Backend.Dao;
+    using System.Diagnostics;
+using NLog;
+    using AutoMapper;
 
     public class LoginatorViewModel : INotifyPropertyChanged {
 
-        private IConfigurationDao ConfigurationDao { get; set; }
+        internal IConfigurationDao ConfigurationDao { get; set; }
+        internal IApplicationConfiguration ApplicationConfiguration { get; set; }
 
         private const int TIME_INTERVAL_IN_MILLISECONDS = 1000;
         private const int DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL = 1000;
         private static object SYNC_OBJECT = new Object();
+        private ILogger Logger { get; set; }
         private Receiver Receiver { get; set; }
         private Timer Timer { get; set; }
 
@@ -85,11 +90,13 @@ namespace LogApplication.ViewModels {
         public ObservableCollection<NamespaceViewModel> Namespaces { get; set; }
         public ObservableCollection<ApplicationViewModel> Applications { get; set; }
 
-        public LoginatorViewModel(IConfigurationDao configurationDao) {
+        public LoginatorViewModel(IApplicationConfiguration applicationConfiguration, IConfigurationDao configurationDao) {
+            ApplicationConfiguration = applicationConfiguration;
             ConfigurationDao = configurationDao;
             IsActive = true;
             NumberOfLogsPerLevel = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
             numberOfLogsPerApplicationAndLevelInternal = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
+            Logger = LogManager.GetCurrentClassLogger();
             Logs = new ObservableRangeCollection<LogViewModel>();
             LogsToInsert = new List<LogViewModel>();
             Namespaces = new ObservableCollection<NamespaceViewModel>();
@@ -105,26 +112,34 @@ namespace LogApplication.ViewModels {
 
         private void Callback(Object state) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
+                // TODO: Refactor this so we can use using(...)
+                Stopwatch sw = new Stopwatch();
                 lock (SYNC_OBJECT) {
+                    sw.Start();
                     UpdateLogs();
+                    sw.Stop();
+                    if (ApplicationConfiguration.IsTimingTraceEnabled) {
+                        Logger.Trace("[UpdateLogs] " + sw.ElapsedMilliseconds + "ms");
+                    }
+                    sw.Restart();
                     UpdateNamespaces();
+                    sw.Stop();
+                    if (ApplicationConfiguration.IsTimingTraceEnabled) {
+                        Logger.Trace("[UpdateNamespaces] " + sw.ElapsedMilliseconds + "ms");
+                    }
+                    sw.Restart();
                     UpdateApplications();
+                    sw.Stop();
+                    if (ApplicationConfiguration.IsTimingTraceEnabled) {
+                        Logger.Trace("[UpdateApplications] " + sw.ElapsedMilliseconds + "ms");
+                    }
                     Timer.Change(TIME_INTERVAL_IN_MILLISECONDS, Timeout.Infinite);
                 }
             });
         }
 
         private LogViewModel ToLogViewModel(Log log) {
-            return new LogViewModel() {
-                Exception = log.Exception,
-                Level = log.Level,
-                Message = log.Message,
-                Namespace = log.Namespace,
-                Application = log.Application,
-                Properties = log.Properties,
-                Thread = log.Thread,
-                Timestamp = log.Timestamp
-            };
+            return Mapper.Map<Log, LogViewModel>(log);
         }
 
         private void Receiver_LogReceived(object sender, LogReceivedEventArgs e) {

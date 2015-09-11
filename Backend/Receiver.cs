@@ -14,16 +14,25 @@ using System.Net.NetworkInformation;
 using Common.Exceptions;
 using Backend.Converter;
 using Common.Configuration;
+using NLog;
 
 namespace Backend {
 
     public class Receiver {
 
+        private ILogger Logger { get; set; }
         private LogType LogType { get; set; }
         private UdpClient Client { get; set; }
         private ILogConverter Converter { get; set; }
 
+        internal IApplicationConfiguration ApplicationConfiguration { get; set; }
+
         public event EventHandler<LogReceivedEventArgs> LogReceived;
+
+        public Receiver(IApplicationConfiguration applicationConfiguration) {
+            Logger = LogManager.GetCurrentClassLogger();
+            ApplicationConfiguration = applicationConfiguration;
+        }
 
         public void Initialize(Configuration configuration) {
 
@@ -69,6 +78,11 @@ namespace Backend {
                                    || wantedIpEndPoint.Port == 0;
                 if (isRightHost && isRightPort) {
                     string receivedText = Encoding.ASCII.GetString(receiveBytes);
+
+                    if (ApplicationConfiguration.IsMessageTraceEnabled) {
+                        Logger.Trace(receivedText);
+                    }
+
                     IEnumerable<Log> logs = Converter.Convert(receivedText);
                     if (LogReceived != null) {
                         foreach (Log log in logs) {
@@ -84,7 +98,6 @@ namespace Backend {
                 c.BeginReceive(new AsyncCallback(DataReceived), ar.AsyncState);
             } catch (Exception e) {
                 Console.WriteLine("Could not read package: " + e);
-                //throw new LoginatorException("Could not read data. Please restart application.");
             }
         }
     }

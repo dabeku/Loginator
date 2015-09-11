@@ -7,7 +7,7 @@
         Title="Loginator" Height="600" Width="900" MinHeight="600" MinWidth="900">
     <Grid Margin="2">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
+            <RowDefinition Height="24" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -37,7 +37,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="4" />
-                <RowDefinition Height="100" />
+                <RowDefinition Height="150" />
             </Grid.RowDefinitions>
             <!--controls:GridViewColumnResize.Enabled="True"-->
             <!--controls:GridViewColumnResize.Width="130"-->
@@ -58,17 +58,17 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Level" controls:GridViewColumnResize.Width="100">
+                        <GridViewColumn Header="Level" controls:GridViewColumnResize.Width="50">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Level}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Thread" controls:GridViewColumnResize.Width="50">
+                        <GridViewColumn Header="Context" controls:GridViewColumnResize.Width="100">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Thread}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
+                                    <TextBlock Text="{Binding Context}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -111,7 +111,7 @@
                 controls:GridViewColumnResize.Enabled="True">
                 <ListView.View>
                     <GridView AllowsColumnReorder="False">
-                        <GridViewColumn Header="Level" controls:GridViewColumnResize.Width="100">
+                        <GridViewColumn Header="Level" controls:GridViewColumnResize.Width="90">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <ComboBox ItemsSource="{Binding Path=LogLevels}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding Path=SelectedMinLogLevel}" Width="70"/>
@@ -138,34 +138,29 @@
                 </TreeView.Resources>
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Height="18">
                             <CheckBox Focusable="False" IsChecked="{Binding IsChecked}" VerticalAlignment="Center" />
                             <Label>
                                 <Label.Content>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=Name}">
-                                            <!--<TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0} ({1})">
-                                                    <Binding Path="Name" />
-                                                    <Binding Path="Count" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>-->
-                                        </TextBlock>
-                                        <TextBlock Text=" ("/>
-                                        <TextBlock Text="{Binding Path=Count}"/>
-                                        <TextBlock Text=":"/>
-                                        <TextBlock Text="{Binding Path=CountTrace}" Foreground="DarkGray"/>
-                                        <TextBlock Text=","/>
-                                        <TextBlock Text="{Binding Path=CountDebug}" Foreground="Gray"/>
-                                        <TextBlock Text=","/>
-                                        <TextBlock Text="{Binding Path=CountInfo}" Foreground="Green"/>
-                                        <TextBlock Text=","/>
-                                        <TextBlock Text="{Binding Path=CountWarn}" Foreground="Orange"/>
-                                        <TextBlock Text=","/>
-                                        <TextBlock Text="{Binding Path=CountError}" Foreground="Red"/>
-                                        <TextBlock Text=","/>
-                                        <TextBlock Text="{Binding Path=CountFatal}" Foreground="DarkViolet"/>
-                                        <TextBlock Text=")"/>
+                                        <TextBlock Text="{Binding Path=Name}" />
+                                        <StackPanel Orientation="Horizontal" Margin="12,2,0,0">
+                                            <TextBlock Text="[" FontSize="8"/>
+                                            <TextBlock Text="{Binding Path=Count}" FontSize="8"/>
+                                            <TextBlock Text=":" FontSize="8"/>
+                                            <TextBlock Text="{Binding Path=CountTrace}" Foreground="DarkGray" FontSize="8"/>
+                                            <TextBlock Text="," FontSize="8"/>
+                                            <TextBlock Text="{Binding Path=CountDebug}" Foreground="Gray" FontSize="8"/>
+                                            <TextBlock Text="," FontSize="8"/>
+                                            <TextBlock Text="{Binding Path=CountInfo}" Foreground="Green" FontSize="8"/>
+                                            <TextBlock Text="," FontSize="8"/>
+                                            <TextBlock Text="{Binding Path=CountWarn}" Foreground="Orange" FontSize="8"/>
+                                            <TextBlock Text="," FontSize="8"/>
+                                            <TextBlock Text="{Binding Path=CountError}" Foreground="Red" FontSize="8"/>
+                                            <TextBlock Text="," FontSize="8"/>
+                                            <TextBlock Text="{Binding Path=CountFatal}" Foreground="DarkViolet" FontSize="8"/>
+                                            <TextBlock Text="]" FontSize="8"/>
+                                        </StackPanel>
                                     </StackPanel>
                                 </Label.Content>
                             </Label>

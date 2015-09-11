@@ -74,6 +74,9 @@ namespace Backend.Converter {
                                 var application = log.Properties.FirstOrDefault(m => m.Name == "log4japp");
                                 log.Application = application == null ? null : application.Value;
 
+                                var context = log.Properties.Where(m => !m.Name.StartsWith("log4j")).Select(m => m.Name + ": " + m.Value);
+                                log.Context = String.Join(", ", context);
+
                                 eventReader.Close();
                             }
                         }

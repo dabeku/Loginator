@@ -8,7 +8,7 @@
              xmlns:converter="clr-namespace:Loginator.Converter">
     <Application.Resources>
         <Style TargetType="{x:Type Control}" x:Key="BaseStyle">
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontSize" Value="11" />
             <Setter Property="FontFamily" Value="Verdana" />
         </Style>
         <Style TargetType="{x:Type Label}" BasedOn="{StaticResource BaseStyle}">
@@ -17,24 +17,22 @@
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="Height" Value="26" />
+            <Setter Property="Height" Value="22" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="Height" Value="26" />
-            <Setter Property="Margin" Value="0,2,0,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="Height" Value="26" />
-            <Setter Property="Margin" Value="0,2,0,0" />
+            <!--<Setter Property="Height" Value="26" />-->
+            <!--<Setter Property="Margin" Value="0,2,0,0" />-->
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="Height" Value="26" />
+            <Setter Property="Height" Value="22" />
         </Style>
 
         <converter:LevelToForegroundConverter x:Key="LevelToForegroundConverter"></converter:LevelToForegroundConverter>

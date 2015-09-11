@@ -1,0 +1,12 @@
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\Common.dll
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\Common.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\Microsoft.Practices.ServiceLocation.dll
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\StructureMap.dll
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\StructureMap.Net4.dll
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\Microsoft.Practices.ServiceLocation.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\Microsoft.Practices.ServiceLocation.xml
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\StructureMap.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\StructureMap.xml
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\StructureMap.Net4.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Release\Common.dll
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Release\Common.pdb
