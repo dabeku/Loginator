@@ -30,11 +30,11 @@ He it's how it looks like:
 
 NLog (.net):
 
-In your logging app add a new target:
+In your logging app add a new target
 ```
 <target xsi:type="Chainsaw" name="chainsaw" address="udp://127.0.0.1:7071" />
 ```
-or, if you want do include the context:
+or, if you want do include the context
 ```
 <target xsi:type="Chainsaw" name="chainsaw" address="udp://127.0.0.1:7071" includeMdc="true" />
 ```
