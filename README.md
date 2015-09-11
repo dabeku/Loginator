@@ -34,9 +34,10 @@ In your logging app add a new target:
 ```
 <target xsi:type="Chainsaw" name="chainsaw" address="udp://127.0.0.1:7071" />
 ```
-or
+or, if you want do include the context:
 ```
 <target xsi:type="Chainsaw" name="chainsaw" address="udp://127.0.0.1:7071" includeMdc="true" />
+```
 and add the logger
 ```
 <logger name="*" minlevel="Trace" writeTo="chainsaw" />
