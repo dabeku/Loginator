@@ -10,12 +10,12 @@ Download the latest version as .zip: [here](Loginator.zip)
 
 He it's how it looks like:
 
-![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9740037/05d838c2-5653-11e5-83e4-9876122489cc.png)
+![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9817745/0aaca424-58a5-11e5-82ca-e791690958d8.png)
 
 ## Some cool features include
 
 * Limit the number of logs held in memory
-* Show details of a log like exception, namespace, etc.
+* Show details of a log like exception, context, etc.
 * Show/Hide logs based on application
 * Show/Hide logs based on namespace
 * Filter output based on log level and expressions
@@ -23,8 +23,8 @@ He it's how it looks like:
 
 ## TODO (from most to least important)
 
+* Add WiX installer
 * Other data sources (database, file, etc.) via polling
-* Code refactoring (expressions, receiver)
 
 ## Chainsaw logging
 
@@ -34,6 +34,9 @@ In your logging app add a new target:
 ```
 <target xsi:type="Chainsaw" name="chainsaw" address="udp://127.0.0.1:7071" />
 ```
+or
+```
+<target xsi:type="Chainsaw" name="chainsaw" address="udp://127.0.0.1:7071" includeMdc="true" />
 and add the logger
 ```
 <logger name="*" minlevel="Trace" writeTo="chainsaw" />
