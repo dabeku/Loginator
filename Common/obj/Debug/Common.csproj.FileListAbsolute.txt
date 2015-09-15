@@ -8,6 +8,6 @@ C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Debug\Microsoft.Practices.
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Debug\StructureMap.pdb
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Debug\StructureMap.xml
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Debug\StructureMap.Net4.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Debug\Common.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Debug\Common.pdb
-C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache

@@ -1,7 +1,8 @@
-C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\Loginator.exe.config
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\NLog.config
+C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\Loginator.exe.config
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\Loginator.exe
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\Loginator.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\AutoMapper.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\Backend.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\Common.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\GalaSoft.MvvmLight.dll
@@ -14,6 +15,7 @@ C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\StructureMap.Ne
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\System.Windows.Interactivity.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\Backend.pdb
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\Common.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\AutoMapper.xml
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\GalaSoft.MvvmLight.pdb
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\GalaSoft.MvvmLight.xml
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\GalaSoft.MvvmLight.Extras.pdb
@@ -41,5 +43,3 @@ C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\obj\Release\Loginator.Prope
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\obj\Release\Loginator.csproj.GenerateResource.Cache
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\obj\Release\Loginator.exe
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\obj\Release\Loginator.pdb
-C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\AutoMapper.dll
-C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\AutoMapper.xml

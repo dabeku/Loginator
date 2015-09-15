@@ -199,7 +199,9 @@ using NLog;
                         ns = new NamespaceViewModel(nsLogPart);
                         Namespaces.Add(ns);
                     }
-                    HandleNamespace(ns, nsLogFull.Substring(nsLogFull.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
+                    if (nsLogFull.Contains(Constants.NAMESPACE_SPLITTER)) {
+                        HandleNamespace(ns, nsLogFull.Substring(nsLogFull.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
+                    }
                 }
 
                 foreach (var ns in Namespaces) {
@@ -229,7 +231,6 @@ using NLog;
                 parent.Children.Add(nsChild);
                 nsChild.Parent = parent;
             }
-
             if (suffix.Contains(Constants.NAMESPACE_SPLITTER)) {
                 HandleNamespace(nsChild, suffix.Substring(suffix.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
             }
@@ -262,47 +263,64 @@ using NLog;
             }
         }
 
+        private void SetLogVisibility(LogViewModel log, NamespaceViewModel ns) {
+            // Only active if namespace AND application are active
+            if (ns.IsChecked) {
+                var application = Applications.FirstOrDefault(m => m.Name == log.Application);
+                if (application != null &&
+                    application.IsActive &&
+                    LoggingLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel) &&
+                    IsLogInSearchCriteria(log)) {
+                    log.IsVisible = true;
+                } else {
+                    log.IsVisible = false;
+                }
+            } else {
+                log.IsVisible = false;
+            }
+        }
+
+        private void SetLogCountByLevel(LogViewModel log, NamespaceViewModel ns) {
+            ns.Count++;
+            switch (log.Level) {
+                case LoggingLevel.TRACE:
+                    ns.CountTrace++;
+                    break;
+                case LoggingLevel.DEBUG:
+                    ns.CountDebug++;
+                    break;
+                case LoggingLevel.INFO:
+                    ns.CountInfo++;
+                    break;
+                case LoggingLevel.WARN:
+                    ns.CountWarn++;
+                    break;
+                case LoggingLevel.ERROR:
+                    ns.CountError++;
+                    break;
+                case LoggingLevel.FATAL:
+                    ns.CountFatal++;
+                    break;
+            }
+        }
+
         private void HandleLogVisibilityByNamespace(LogViewModel log, NamespaceViewModel ns, string currentNamespace) {
+
+            if (log.Namespace == currentNamespace) {
+                // This happens when user sends a custom namespace like "MiniProfiler"
+                SetLogCountByLevel(log, ns);
+                SetLogVisibility(log, ns);
+                return;
+            }
+
             foreach (var child in ns.Children) {
                 string nsAbsolute = currentNamespace + Constants.NAMESPACE_SPLITTER + child.Name;
                 if (log.Namespace == nsAbsolute) {
-                    child.Count++;
-                    switch (log.Level) {
-                        case LoggingLevel.TRACE:
-                            child.CountTrace++;
-                            break;
-                        case LoggingLevel.DEBUG:
-                            child.CountDebug++;
-                            break;
-                        case LoggingLevel.INFO:
-                            child.CountInfo++;
-                            break;
-                        case LoggingLevel.WARN:
-                            child.CountWarn++;
-                            break;
-                        case LoggingLevel.ERROR:
-                            child.CountError++;
-                            break;
-                        case LoggingLevel.FATAL:
-                            child.CountFatal++;
-                            break;
-                    }
-                    // Only active if namespace AND application are active
-                    if (child.IsChecked) {
-                        var application = Applications.FirstOrDefault(m => m.Name == log.Application);
-                        if (application != null &&
-                            application.IsActive &&
-                            LoggingLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel) &&
-                            IsLogInSearchCriteria(log)) {
-                            log.IsVisible = true;
-                        } else {
-                            log.IsVisible = false;
-                        }
-                    } else {
-                        log.IsVisible = false;
-                    }
+                    SetLogCountByLevel(log, child);
+                    SetLogVisibility(log, child);
                 } else {
-                    HandleLogVisibilityByNamespace(log, child, currentNamespace + Constants.NAMESPACE_SPLITTER + child.Name);
+                    string childNamespace = currentNamespace + Constants.NAMESPACE_SPLITTER + child.Name;
+                    HandleLogVisibilityByNamespace(log, child, childNamespace);
                 }
             }
         }

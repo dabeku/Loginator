@@ -45,7 +45,7 @@ namespace LogApplication.ViewModels {
             LogLevels.Add(new LoggingLevel(LoggingLevel.WARN));
             LogLevels.Add(new LoggingLevel(LoggingLevel.ERROR));
             LogLevels.Add(new LoggingLevel(LoggingLevel.FATAL));
-            SelectedMinLogLevel = LogLevels.ElementAt(2).Id;
+            SelectedMinLogLevel = LogLevels.ElementAt(0).Id;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
