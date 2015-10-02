@@ -51,7 +51,7 @@ and add the logger
 
 Mac:
 
-cat <(/[path-to]/Android/sdk/platform-tools/adb -s [your-device-id] logcat) | nc -u 192.168.1.5 7071
+cat <(/[path-to]/Android/sdk/platform-tools/adb -s [your-device-id] logcat) | nc -u 192.168.1.5 7081
 
 ## Tested with
 
