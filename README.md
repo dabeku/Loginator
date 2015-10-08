@@ -46,7 +46,7 @@ and add the logger
 ## Logcat logging
 
 1. Connect your Android device to your PC or Mac via USB
-2. Find you device ID: /[path-to]/Android/sdk/platform-tools/adb devices
+2. Find your device ID: /[path-to]/Android/sdk/platform-tools/adb devices
 3. Forward the logcat output to your machine with Loginator running
 
 Mac:
