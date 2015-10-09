@@ -15,7 +15,7 @@ namespace Backend.Model {
         /// <summary>
         /// The log level in the form "INFO", "ERROR", etc. This should always be available.
         /// </summary>
-        public string Level { get; set; }
+        public LoggingLevel Level { get; set; }
         /// <summary>
         /// The log message. Can be anything the logging source writes. This should always be available.
         /// </summary>

@@ -22,8 +22,10 @@ namespace LogApplication.ViewModels {
     using Common.Configuration;
     using Backend.Dao;
     using System.Diagnostics;
-using NLog;
+    using NLog;
     using AutoMapper;
+    using LogApplication.Collections;
+    using Loginator.ViewModels;
 
     public class LoginatorViewModel : INotifyPropertyChanged {
 
@@ -31,8 +33,7 @@ using NLog;
         internal IApplicationConfiguration ApplicationConfiguration { get; set; }
 
         private const int TIME_INTERVAL_IN_MILLISECONDS = 1000;
-        private const int DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL = 1000;
-        private static object SYNC_OBJECT = new Object();
+        
         private ILogger Logger { get; set; }
         private Receiver Receiver { get; set; }
         private Timer Timer { get; set; }
@@ -86,7 +87,7 @@ using NLog;
 
         private List<LogViewModel> LogsToInsert { get; set; }
 
-        public ObservableRangeCollection<LogViewModel> Logs { get; set; }
+        public OrderedObservableCollection Logs { get; set; }
         public ObservableCollection<NamespaceViewModel> Namespaces { get; set; }
         public ObservableCollection<ApplicationViewModel> Applications { get; set; }
 
@@ -94,10 +95,9 @@ using NLog;
             ApplicationConfiguration = applicationConfiguration;
             ConfigurationDao = configurationDao;
             IsActive = true;
-            NumberOfLogsPerLevel = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
-            numberOfLogsPerApplicationAndLevelInternal = DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
+            NumberOfLogsPerLevel = Constants.DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
             Logger = LogManager.GetCurrentClassLogger();
-            Logs = new ObservableRangeCollection<LogViewModel>();
+            Logs = new OrderedObservableCollection();
             LogsToInsert = new List<LogViewModel>();
             Namespaces = new ObservableCollection<NamespaceViewModel>();
             Applications = new ObservableCollection<ApplicationViewModel>();
@@ -114,25 +114,33 @@ using NLog;
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
                 // TODO: Refactor this so we can use using(...)
                 Stopwatch sw = new Stopwatch();
-                lock (SYNC_OBJECT) {
+                lock (ViewModelConstants.SYNC_OBJECT) {
+                    var logsToInsert = LogsToInsert.OrderBy(m => m.Timestamp);
+
+                    // 1. Add missing applications using incoming logs
                     sw.Start();
-                    UpdateLogs();
-                    sw.Stop();
-                    if (ApplicationConfiguration.IsTimingTraceEnabled) {
-                        Logger.Trace("[UpdateLogs] " + sw.ElapsedMilliseconds + "ms");
-                    }
-                    sw.Restart();
-                    UpdateNamespaces();
-                    sw.Stop();
-                    if (ApplicationConfiguration.IsTimingTraceEnabled) {
-                        Logger.Trace("[UpdateNamespaces] " + sw.ElapsedMilliseconds + "ms");
-                    }
-                    sw.Restart();
-                    UpdateApplications();
+                    UpdateApplications(logsToInsert);
                     sw.Stop();
                     if (ApplicationConfiguration.IsTimingTraceEnabled) {
                         Logger.Trace("[UpdateApplications] " + sw.ElapsedMilliseconds + "ms");
                     }
+                    // 2. Add missing namespaces using incoming logs
+                    sw.Restart();
+                    UpdateNamespaces(logsToInsert);
+                    sw.Stop();
+                    if (ApplicationConfiguration.IsTimingTraceEnabled) {
+                        Logger.Trace("[UpdateNamespaces] " + sw.ElapsedMilliseconds + "ms");
+                    }
+
+                    sw.Restart();
+                    AddLogs(logsToInsert);
+                    sw.Stop();
+                    if (ApplicationConfiguration.IsTimingTraceEnabled) {
+                        Logger.Trace("[UpdateLogs] " + sw.ElapsedMilliseconds + "ms");
+                    }
+
+                    LogsToInsert.Clear();
+                    
                     Timer.Change(TIME_INTERVAL_IN_MILLISECONDS, Timeout.Infinite);
                 }
             });
@@ -144,81 +152,73 @@ using NLog;
 
         private void Receiver_LogReceived(object sender, LogReceivedEventArgs e) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
-                lock (SYNC_OBJECT) {
-                    // Add a log entry only to the list if
-                    // * global logging is active (checkbox)
-                    // * no application was found (assume that it's the first log and we need this to populate the application list)
-                    // * an application was found, is active (checkbox at application) and the log level is above the min level (dropdown at application)
+                lock (ViewModelConstants.SYNC_OBJECT) {
+                    // Add a log entry only to the list if global logging is active (checkbox)
                     if (!IsActive) {
                         return;
                     }
                     LogViewModel log = ToLogViewModel(e.Log);
-                    var application = Applications.FirstOrDefault(m => m.Name == log.Application);
-                    if (application != null && (!application.IsActive || !LoggingLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel))) {
-                        return;
-                    }
                     LogsToInsert.Add(log);
                 }
             });
         }
 
-        private void UpdateLogs() {
+        private void AddLogs(IEnumerable<LogViewModel> logsToInsert) {
             try {
-                var logsToInsert = LogsToInsert.OrderBy(m => m.Timestamp);
-                Logs.AddRangeAtStart(logsToInsert);
-                LogsToInsert.Clear();
-
-                var applications = new List<string>(Logs.Select(m => m.Application).Distinct());
-                var levels = new List<string>(Logs.Select(m => m.Level).Distinct());
-                foreach (var application in applications) {
-                    foreach (var level in levels) {
-                        var logsByApplicationAndLevel = Logs.Where(m => m.Level == level && m.Application == application);
-                        int logCountByApplicationAndLevel = logsByApplicationAndLevel.Count();
-                        while (logCountByApplicationAndLevel > numberOfLogsPerApplicationAndLevelInternal) {
-                            Logs.Remove(logsByApplicationAndLevel.ElementAt(logsByApplicationAndLevel.Count() - 1));
-                            logsByApplicationAndLevel = Logs.Where(m => m.Level == level && m.Application == application);
-                            logCountByApplicationAndLevel = logsByApplicationAndLevel.Count();
-                        }
+                foreach (var logToInsert in logsToInsert) {
+                    var application = Applications.FirstOrDefault(m => m.Name == logToInsert.Application);
+                    if (application == null) {
+                        Logger.Error("[AddLogs] The application has to be set at this point.");
+                        return;
                     }
+                    application.AddLog(logToInsert);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Console.WriteLine("Could not update logs: " + e);
             }
         }
-
-        private void UpdateNamespaces() {
+        
+        private void UpdateNamespaces(IEnumerable<LogViewModel> logsToInsert) {
             try {
-                foreach (var log in Logs) {
+                foreach (var log in logsToInsert) {
+                    var application = Applications.FirstOrDefault(m => m.Name == log.Application);
+                    if (application == null) {
+                        Logger.Error("[UpdateNamespaces] The application has to be set at this point.");
+                        return;
+                    }
+                    // Try to get existing root namespace with name of application
+                    var nsApplication = Namespaces.FirstOrDefault(m => m.Name == log.Application);
+                    if (nsApplication == null) {
+                        nsApplication = new NamespaceViewModel(log.Application, application);
+                        Namespaces.Add(nsApplication);
+                    }
+
                     // Example: Verbosus.VerbTeX.View
                     string nsLogFull = log.Namespace;
                     // Example: Verbosus
                     string nsLogPart = nsLogFull.Split(new string[] { Constants.NAMESPACE_SPLITTER }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                     // Try to get existing namespace with name Verbosus
-                    var ns = Namespaces.FirstOrDefault(m => m.Name == nsLogPart);
-                    if (ns == null) {
-                        ns = new NamespaceViewModel(nsLogPart);
-                        Namespaces.Add(ns);
+                    var nsChild = nsApplication.Children.FirstOrDefault(m => m.Name == nsLogPart);
+                    if (nsChild == null) {
+                        nsChild = new NamespaceViewModel(nsLogPart, application);
+                        nsChild.IsChecked = nsApplication.IsChecked;
+                        nsApplication.Children.Add(nsChild);
+                        nsChild.Parent = nsApplication;
                     }
                     if (nsLogFull.Contains(Constants.NAMESPACE_SPLITTER)) {
-                        HandleNamespace(ns, nsLogFull.Substring(nsLogFull.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
+                        HandleNamespace(nsChild, nsLogFull.Substring(nsLogFull.IndexOf(Constants.NAMESPACE_SPLITTER) + 1), application, log);
+                    } else {
+                        SetLogCountByLevel(log, nsChild);
                     }
                 }
 
-                foreach (var ns in Namespaces) {
-                    ResetAllCount(ns);
-                }
-
-                foreach (var log in Logs) {
-                    foreach (var ns in Namespaces) {
-                        HandleLogVisibilityByNamespace(log, ns, ns.Name);
-                    }
-                }
             } catch (Exception e) {
                 Console.WriteLine("Could not update namespaces: " + e);
             }
         }
 
-        private void HandleNamespace(NamespaceViewModel parent, string suffix) {
+        private void HandleNamespace(NamespaceViewModel parent, string suffix, ApplicationViewModel application, LogViewModel log) {
             // Example: VerbTeX.View (Verbosus was processed before)
             string nsLogFull = suffix;
             // Example: VerbTeX
@@ -226,22 +226,24 @@ using NLog;
             // Try to get existing namespace with name VerbTeX
             var nsChild = parent.Children.FirstOrDefault(m => m.Name == nsLogPart);
             if (nsChild == null) {
-                nsChild = new NamespaceViewModel(nsLogPart);
+                nsChild = new NamespaceViewModel(nsLogPart, application);
                 nsChild.IsChecked = parent.IsChecked;
                 parent.Children.Add(nsChild);
                 nsChild.Parent = parent;
             }
             if (suffix.Contains(Constants.NAMESPACE_SPLITTER)) {
-                HandleNamespace(nsChild, suffix.Substring(suffix.IndexOf(Constants.NAMESPACE_SPLITTER) + 1));
+                HandleNamespace(nsChild, suffix.Substring(suffix.IndexOf(Constants.NAMESPACE_SPLITTER) + 1), application, log);
+            } else {
+                SetLogCountByLevel(log, nsChild);
             }
         }
 
-        private void UpdateApplications() {
+        private void UpdateApplications(IEnumerable<LogViewModel> logsToInsert) {
             try {
-                foreach (var log in Logs) {
+                foreach (var log in logsToInsert) {
                     var application = Applications.FirstOrDefault(m => m.Name == log.Application);
                     if (application == null) {
-                        application = new ApplicationViewModel(log.Application);
+                        application = new ApplicationViewModel(log.Application, Logs, Namespaces);
                         Applications.Add(application);
                     }
                 }
@@ -263,105 +265,21 @@ using NLog;
             }
         }
 
-        private void SetLogVisibility(LogViewModel log, NamespaceViewModel ns) {
-            // Only active if namespace AND application are active
-            if (ns.IsChecked) {
-                var application = Applications.FirstOrDefault(m => m.Name == log.Application);
-                if (application != null &&
-                    application.IsActive &&
-                    LoggingLevel.IsLogLevelAboveMin(log.Level, application.SelectedMinLogLevel) &&
-                    IsLogInSearchCriteria(log)) {
-                    log.IsVisible = true;
-                } else {
-                    log.IsVisible = false;
-                }
-            } else {
-                log.IsVisible = false;
-            }
-        }
-
         private void SetLogCountByLevel(LogViewModel log, NamespaceViewModel ns) {
             ns.Count++;
-            switch (log.Level) {
-                case LoggingLevel.TRACE:
-                    ns.CountTrace++;
-                    break;
-                case LoggingLevel.DEBUG:
-                    ns.CountDebug++;
-                    break;
-                case LoggingLevel.INFO:
-                    ns.CountInfo++;
-                    break;
-                case LoggingLevel.WARN:
-                    ns.CountWarn++;
-                    break;
-                case LoggingLevel.ERROR:
-                    ns.CountError++;
-                    break;
-                case LoggingLevel.FATAL:
-                    ns.CountFatal++;
-                    break;
+            if (log.Level == LoggingLevel.TRACE) {
+                ns.CountTrace++;
+            } else if (log.Level == LoggingLevel.DEBUG) {
+                ns.CountDebug++;
+            } else if (log.Level == LoggingLevel.INFO) {
+                ns.CountInfo++;
+            } else if (log.Level == LoggingLevel.WARN) {
+                ns.CountWarn++;
+            } else if (log.Level == LoggingLevel.ERROR) {
+                ns.CountError++;
+            } else if (log.Level == LoggingLevel.FATAL) {
+                ns.CountFatal++;
             }
-        }
-
-        private void HandleLogVisibilityByNamespace(LogViewModel log, NamespaceViewModel ns, string currentNamespace) {
-
-            if (log.Namespace == currentNamespace) {
-                // This happens when user sends a custom namespace like "MiniProfiler"
-                SetLogCountByLevel(log, ns);
-                SetLogVisibility(log, ns);
-                return;
-            }
-
-            foreach (var child in ns.Children) {
-                string nsAbsolute = currentNamespace + Constants.NAMESPACE_SPLITTER + child.Name;
-                if (log.Namespace == nsAbsolute) {
-                    SetLogCountByLevel(log, child);
-                    SetLogVisibility(log, child);
-                } else {
-                    string childNamespace = currentNamespace + Constants.NAMESPACE_SPLITTER + child.Name;
-                    HandleLogVisibilityByNamespace(log, child, childNamespace);
-                }
-            }
-        }
-
-        private bool IsLogInSearchCriteria(LogViewModel log) {
-            try {
-                // Default
-                if (String.IsNullOrEmpty(searchCriteriaInternal)) {
-                    return true;
-                }
-
-                // Search
-                if (!IsInverted) {
-                    if ((!String.IsNullOrEmpty(log.Application) && log.Application.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Namespace) && log.Namespace.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Message) && log.Message.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Exception) && log.Exception.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant()))) {
-                        return true;
-                    }
-                    return false;
-                } else {
-                    if ((!String.IsNullOrEmpty(log.Application) && log.Application.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Namespace) && log.Namespace.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Message) && log.Message.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant())) ||
-                        (!String.IsNullOrEmpty(log.Exception) && log.Exception.ToLowerInvariant().Contains(searchCriteriaInternal.ToLowerInvariant()))) {
-                        return false;
-                    }
-                    return true;
-                }
-            } catch (Exception e) {
-                Console.WriteLine("Invalid search criteria: " + e);
-                return false;
-            }
-        }
-
-        public void Update() {
-            DispatcherHelper.CheckBeginInvokeOnUI(() => {
-                lock (SYNC_OBJECT) {
-                    UpdateLogs();
-                }
-            });
         }
 
         private ICommand clearLogsCommand;
@@ -378,8 +296,14 @@ using NLog;
         }
         public void ClearLogs(LoginatorViewModel loginator) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
-                lock (SYNC_OBJECT) {
+                lock (ViewModelConstants.SYNC_OBJECT) {
                     Logs.Clear();
+                    foreach (var application in Applications) {
+                        application.ClearLogs();
+                    }
+                    foreach (var ns in Namespaces) {
+                        ResetAllCount(ns);
+                    }
                 }
             });
         }
@@ -398,7 +322,7 @@ using NLog;
         }
         public void ClearAll(LoginatorViewModel loginator) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
-                lock (SYNC_OBJECT) {
+                lock (ViewModelConstants.SYNC_OBJECT) {
                     Logs.Clear();
                     Namespaces.Clear();
                     Applications.Clear();
@@ -420,9 +344,11 @@ using NLog;
         }
         public void UpdateNumberOfLogsPerLevel(LoginatorViewModel loginator) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
-                lock (SYNC_OBJECT) {
+                lock (ViewModelConstants.SYNC_OBJECT) {
                     numberOfLogsPerApplicationAndLevelInternal = NumberOfLogsPerLevel;
-                    Update();
+                    foreach (var application in Applications) {
+                        application.UpdateMaxNumberOfLogs(numberOfLogsPerApplicationAndLevelInternal);
+                    }
                 }
             });
         }
@@ -441,9 +367,11 @@ using NLog;
         }
         public void UpdateSearchCriteria(LoginatorViewModel loginator) {
             DispatcherHelper.CheckBeginInvokeOnUI(() => {
-                lock (SYNC_OBJECT) {
+                lock (ViewModelConstants.SYNC_OBJECT) {
                     searchCriteriaInternal = SearchCriteria;
-                    Update();
+                    foreach (var application in Applications) {
+                        application.UpdateSearchCriteria(searchCriteriaInternal, IsInverted);
+                    }
                 }
             });
         }

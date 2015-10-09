@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
+using Common;
+using Loginator.ViewModels;
 
 namespace LogApplication.ViewModels {
 
@@ -16,6 +18,11 @@ namespace LogApplication.ViewModels {
             get { return isChecked; }
             set {
                 isChecked = value;
+                lock (ViewModelConstants.SYNC_OBJECT) {
+                    if (ApplicationViewModel != null) {
+                        ApplicationViewModel.UpdateByNamespaceChange(this);
+                    }
+                }
                 //if (isChecked && Parent != null) {
                 //    // Bubble up
                 //    Parent.IsChecked = true;
@@ -29,6 +36,7 @@ namespace LogApplication.ViewModels {
                 }
                     
                 //}
+                // TODO: Use ReflectionUtil here or nameof()
                 OnPropertyChanged("IsChecked");
             }
         }
@@ -125,11 +133,26 @@ namespace LogApplication.ViewModels {
         public NamespaceViewModel Parent { get; set; }
         public ObservableCollection<NamespaceViewModel> Children { get; set; }
 
-        public NamespaceViewModel(string name) {
+        private ApplicationViewModel ApplicationViewModel { get; set; }
+
+        public NamespaceViewModel(string name, ApplicationViewModel applicationViewModel) {
             IsChecked = true;
             IsExpanded = true;
             Name = name;
             Children = new ObservableCollection<NamespaceViewModel>();
+            ApplicationViewModel = applicationViewModel;
+        }
+
+        public string Fullname {
+            get {
+                string fullname = Name;
+                var parent = Parent;
+                while (parent != null) {
+                    fullname = parent.Name + Constants.NAMESPACE_SPLITTER + fullname;
+                    parent = parent.Parent;
+                }
+                return fullname;
+            }
         }
         
         public event PropertyChangedEventHandler PropertyChanged;

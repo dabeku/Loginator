@@ -12,7 +12,7 @@ namespace Loginator.Converter {
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             if (value != null) {
-                string level = value.ToString();
+                LoggingLevel level = (LoggingLevel)value;
                 if (level == LoggingLevel.TRACE) {
                     return new SolidColorBrush(Colors.DarkGray);
                 } else if (level == LoggingLevel.DEBUG) {

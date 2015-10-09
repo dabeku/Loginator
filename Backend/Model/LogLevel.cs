@@ -6,24 +6,30 @@ using System.Text;
 namespace Backend.Model {
     public class LoggingLevel {
 
-        public string Id { get; private set; }
+        public int Id { get; private set; }
         public string Name { get; private set; }
 
-        public const string NOT_SET = "[not set]";
-        public const string TRACE = "TRACE";
-        public const string DEBUG = "DEBUG";
-        public const string INFO = "INFO";
-        public const string WARN = "WARN";
-        public const string ERROR = "ERROR";
-        public const string FATAL = "FATAL";
+        public static readonly LoggingLevel NOT_SET = new LoggingLevel(-1, "[not set]");
+        public static readonly LoggingLevel TRACE = new LoggingLevel(0, "TRACE");
+        public static readonly LoggingLevel DEBUG = new LoggingLevel(1, "DEBUG");
+        public static readonly LoggingLevel INFO = new LoggingLevel(2, "INFO");
+        public static readonly LoggingLevel WARN = new LoggingLevel(3, "WARN");
+        public static readonly LoggingLevel ERROR = new LoggingLevel(4, "ERROR");
+        public static readonly LoggingLevel FATAL = new LoggingLevel(5, "FATAL");
 
-        public LoggingLevel(string name) {
-            Id = name;
+        private static readonly IEnumerable<LoggingLevel> Levels = new[] { NOT_SET, TRACE, DEBUG, INFO, WARN, ERROR, FATAL };
+
+        public LoggingLevel(int id, string name) {
+            Id = id;
             Name = name;
         }
 
-        public static bool IsLogLevelAboveMin(string level, string minLevel) {
-            if (String.IsNullOrEmpty(level) || String.IsNullOrEmpty(minLevel)) {
+        public static LoggingLevel FromName(string name) {
+            return Levels.FirstOrDefault(m => m.Name == name);
+        }
+
+        public static bool IsLogLevelAboveMin(LoggingLevel level, LoggingLevel minLevel) {
+            if (level == null || minLevel == null) {
                 return false;
             }
 
@@ -46,6 +52,40 @@ namespace Backend.Model {
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Gets the log level incl. the toLevel if fromLevel != toLevel
+        /// Example (remove): fromLevel = Debug, toLevel = Warn -> return = Debug, Info
+        /// Example (add): fromLevel = Warn, toLevel = Debug -> return = Info, Debug
+        /// </summary>
+        public static LoggingLevel[] GetLogLevelsBetween(LoggingLevel fromLevel, LoggingLevel toLevel) {
+
+            if (fromLevel == toLevel || fromLevel == null || toLevel == null) {
+                return new LoggingLevel[] { };
+            }
+
+            IEnumerable<LoggingLevel> levelsBetween;
+            if (fromLevel.Id < toLevel.Id) {
+                levelsBetween = Levels.Where(m => m.Id >= fromLevel.Id && m.Id < toLevel.Id);
+            } else {
+                levelsBetween = Levels.Where(m => m.Id >= toLevel.Id && m.Id < fromLevel.Id);
+            }
+
+            return levelsBetween.ToArray();
+        }
+
+        public override bool Equals(object obj) {
+            if (obj == null || GetType() != obj.GetType()) {
+                return false;
+            }
+            LoggingLevel other = (LoggingLevel)obj;
+            return Id == other.Id &&
+                Name == other.Name;
+        }
+
+        public override int GetHashCode() {
+            return new { Id, Name }.GetHashCode();
         }
     }
 }

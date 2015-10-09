@@ -35,6 +35,8 @@ namespace Backend.Converter {
 
                 foreach (string line in lines) {
 
+
+
                     // Example: I/ActivityManager(  585): Starting activity: Intent { action=android.intent.action...}
                     int indexOfTag = line.IndexOf('/');
                     int indexOfMessage = line.IndexOf(':');
@@ -48,23 +50,19 @@ namespace Backend.Converter {
                         log.Level = LoggingLevel.NOT_SET;
                     }
                     else {
-                        string level = line.Substring(0, indexOfTag);
-                        if (level == "V") {
+                        LoggingLevel level = null;
+                        string levelRaw = line.Substring(0, indexOfTag);
+                        if (levelRaw == "V") {
                             level = LoggingLevel.TRACE;
-                        }
-                        else if (level == "D") {
+                        } else if (levelRaw == "D") {
                             level = LoggingLevel.DEBUG;
-                        }
-                        else if (level == "I") {
+                        } else if (levelRaw == "I") {
                             level = LoggingLevel.INFO;
-                        }
-                        else if (level == "W") {
+                        } else if (levelRaw == "W") {
                             level = LoggingLevel.WARN;
-                        }
-                        else if (level == "E") {
+                        } else if (levelRaw == "E") {
                             level = LoggingLevel.ERROR;
-                        }
-                        else if (level == "F") {
+                        } else if (levelRaw == "F") {
                             level = LoggingLevel.FATAL;
                         }
                         log.Level = level;
@@ -96,6 +94,11 @@ namespace Backend.Converter {
             }
 
             return new Log[] { Log.DEFAULT };
+        }
+
+        // I/ActivityManager(  585): Starting activity: Intent { action=android.intent.action...}
+        private bool IsValidLine(string line) {
+            return false;
         }
     }
 }

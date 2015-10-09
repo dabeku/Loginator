@@ -10,7 +10,7 @@ namespace LogApplication.ViewModels {
 
     public class LogViewModel : INotifyPropertyChanged {
         public DateTime Timestamp { get; set; }
-        public string Level { get; set; }
+        public LoggingLevel Level { get; set; }
         public string Message { get; set; }
         public string Exception { get; set; }
         public string Namespace { get; set; }
@@ -19,19 +19,19 @@ namespace LogApplication.ViewModels {
         public string Context { get; set; }
         //public IEnumerable<Property> Properties { get; set; }
 
-        private bool isVisible;
-        public bool IsVisible {
-            get {
-                return isVisible;
-            }
-            set {
-                isVisible = value;
-                OnPropertyChanged("IsVisible");
-            }
-        }
+        //private bool isVisible;
+        //public bool IsVisible {
+        //    get {
+        //        return isVisible;
+        //    }
+        //    set {
+        //        isVisible = value;
+        //        OnPropertyChanged("IsVisible");
+        //    }
+        //}
 
         public LogViewModel() {
-            IsVisible = false;
+            //IsVisible = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

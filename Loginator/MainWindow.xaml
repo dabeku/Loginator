@@ -61,7 +61,7 @@
                         <GridViewColumn Header="Level" controls:GridViewColumnResize.Width="50">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Level}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
+                                    <TextBlock Text="{Binding Path=Level.Name}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -81,7 +81,7 @@
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>
-                <ListView.Resources>
+                <!--<ListView.Resources>
                     <Style TargetType="ListViewItem">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsVisible}" Value="False">
@@ -90,7 +90,7 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </ListView.Resources>
+                </ListView.Resources>-->
             </ListView>
             <GridSplitter Grid.Row="1" ResizeBehavior="BasedOnAlignment" ResizeDirection="Rows" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <ScrollViewer Grid.Row="2">
@@ -114,7 +114,7 @@
                         <GridViewColumn Header="Level" controls:GridViewColumnResize.Width="90">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <ComboBox ItemsSource="{Binding Path=LogLevels}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding Path=SelectedMinLogLevel}" Width="70"/>
+                                    <ComboBox ItemsSource="{Binding Path=LogLevels}" DisplayMemberPath="Name" SelectedValue="{Binding Path=SelectedMinLogLevel}" Width="70"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

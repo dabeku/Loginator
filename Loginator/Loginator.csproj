@@ -88,6 +88,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper\DiBootstrapperFrontend.cs" />
+    <Compile Include="Collections\OrderedObservableCollection.cs" />
     <Compile Include="ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
     </Compile>
@@ -97,6 +98,7 @@
     <Compile Include="ViewModels\LogViewModel.cs" />
     <Compile Include="ViewModels\LoginatorViewModel.cs" />
     <Compile Include="ViewModels\NamespaceViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelConstants.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Page Include="ConfigurationWindow.xaml">
       <SubType>Designer</SubType>
