@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  
+  <Product Id="*" Name="Loginator: Log Viewer" Language="1033" Version="1.0.0.0" Manufacturer="Loginator" UpgradeCode="F2AAA071-4889-4A92-8048-7E38D5AC090B">
+    <Package InstallerVersion="200" Compressed="yes" InstallPrivileges="elevated" InstallScope="perMachine" />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Upgrade to newer version: http://stackoverflow.com/questions/114165/how-to-implement-wix-installer-upgrade/ -->
+    <Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
+    <Upgrade Id="F2AAA071-4889-4A92-8048-7E38D5AC090B">
+      <!-- This product should remove only older versions of itself. The Maximum version is to be less than the current product -->
+      <UpgradeVersion
+         Minimum="1.0.0.0" Maximum="99.0.0.0"
+         Property="PREVIOUSVERSIONSINSTALLED"
+         IncludeMinimum="yes" IncludeMaximum="no" />
+    </Upgrade>
+
+    <!-- Uninstall any previouse versions before installing the new one -->
+    <InstallExecuteSequence>
+      <RemoveExistingProducts Before="InstallInitialize" />
+    </InstallExecuteSequence>
+
+    <Feature Id="ProductFeature" Title="Loginator" Level="1">
+      <Feature Id="Application" Title="Application" Level="1" TypicalDefault="install">
+        <ComponentGroupRef Id="ApplicationGrp"/>
+      </Feature>
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <!-- http://wixtoolset.org/documentation/manual/v3/wixui/wixui_customizations.html --><!--
+    <WixVariable Id="WixUIBannerBmp" Value="GUI/banner.bmp" />-->
+
+    <!-- Configure the User Interface -->
+    <UIRef Id="WixUI_Loginator_InstallDir" />
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Loginator"/>
+      </Directory>
+    </Directory>
+
+  </Fragment>
+</Wix>

@@ -7292,3 +7292,7 @@ D/QC-QMI  ( 1620):  Sending message
 2015-10-09 18:38:02:417 | Backend.Receiver | Trace | D/QC-QMI  ( 1620):  Calling cooked async Callback 
 D/QC-QMI  ( 1620):  Inside qmi_client_decode_msg_async  Callback 
  | 
+2015-10-10 18:11:10:999 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-10-10 18:12:56:083 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-10-10 18:13:27:329 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-10-10 18:17:46:845 | Loginator.App | Info | [OnStartup] Application successfully started | 

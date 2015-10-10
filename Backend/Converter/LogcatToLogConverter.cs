@@ -9,11 +9,14 @@ using System.Xml.Linq;
 using Backend.Model;
 using Common;
 using NLog;
+using System.Text.RegularExpressions;
 
 namespace Backend.Converter {
 
     public class LogcatToLogConverter : ILogConverter {
 
+        // https://regex101.com/
+        private static readonly Regex Regex = new Regex(@"^(V|D|I|W|E|F|S)(\/)([ -~]+)(\()([0-9 ]+)(\))(\:)([ -~]+)$");
         private ILogger Logger { get; set; }
 
         public LogcatToLogConverter() {
@@ -33,59 +36,26 @@ namespace Backend.Converter {
 
                 IList<Log> logs = new List<Log>();
 
+                // Example: I/ActivityManager(  585): Starting activity: Intent { action=android.intent.action...}
+                // Namespace: Create "Logcat.585.ActivityManager" from "ActivityManager(  585)"
                 foreach (string line in lines) {
 
-
-
-                    // Example: I/ActivityManager(  585): Starting activity: Intent { action=android.intent.action...}
-                    int indexOfTag = line.IndexOf('/');
-                    int indexOfMessage = line.IndexOf(':');
-
-                    if (indexOfTag == -1 && indexOfMessage == -1) {
-                        return new Log[] { Log.DEFAULT };
+                    if (!Regex.IsMatch(line)) {
+                        continue;
                     }
 
                     Log log = new Log();
-                    if (indexOfTag == -1) {
-                        log.Level = LoggingLevel.NOT_SET;
-                    }
-                    else {
-                        LoggingLevel level = null;
-                        string levelRaw = line.Substring(0, indexOfTag);
-                        if (levelRaw == "V") {
-                            level = LoggingLevel.TRACE;
-                        } else if (levelRaw == "D") {
-                            level = LoggingLevel.DEBUG;
-                        } else if (levelRaw == "I") {
-                            level = LoggingLevel.INFO;
-                        } else if (levelRaw == "W") {
-                            level = LoggingLevel.WARN;
-                        } else if (levelRaw == "E") {
-                            level = LoggingLevel.ERROR;
-                        } else if (levelRaw == "F") {
-                            level = LoggingLevel.FATAL;
-                        }
-                        log.Level = level;
-                    }
 
-                    
-                    string ns = line.Substring(indexOfTag + 1, indexOfMessage - indexOfTag - 1);
-
-                    int braceOpenIndex = ns.IndexOf("(");
-                    int braceCloseIndex = ns.IndexOf(")");
-                    if (braceOpenIndex != -1 && braceCloseIndex != -1 && braceOpenIndex < braceCloseIndex) {
-                        // Create the structure "Logcat.585.ActivityManager" out of "ActivityManager(  585)"
-                        log.Namespace = Constants.NAMESPACE_LOGCAT + Constants.NAMESPACE_SPLITTER + ns.Substring(braceOpenIndex + 1, braceCloseIndex - braceOpenIndex - 1).Trim() + Constants.NAMESPACE_SPLITTER + ns.Substring(0, braceOpenIndex);
-                    } else {
-                        // Leave the structure as it is: "ActivityManager(  585)"
-                        log.Namespace = Constants.NAMESPACE_LOGCAT + Constants.NAMESPACE_SPLITTER + ns;
+                    foreach (Match match in Regex.Matches(line)) {
+                        var group = match.Groups;
+                        log.Level = GetLogLevel(group[1].Value);
+                        log.Namespace = group[3].Value.Trim();
+                        log.Namespace = Constants.NAMESPACE_LOGCAT + Constants.NAMESPACE_SPLITTER + group[5].Value.Trim() + Constants.NAMESPACE_SPLITTER + log.Namespace;
+                        log.Message = group[8].Value.Trim();
                     }
                     
-                    log.Message = line.Substring(indexOfMessage + 1).Trim();
                     if (!String.IsNullOrEmpty(log.Message)) {
                         logs.Add(log);
-                    } else {
-                        //Console.WriteLine("Do not log message as text is empty");
                     }
                 }
                 return logs;
@@ -96,9 +66,22 @@ namespace Backend.Converter {
             return new Log[] { Log.DEFAULT };
         }
 
-        // I/ActivityManager(  585): Starting activity: Intent { action=android.intent.action...}
-        private bool IsValidLine(string line) {
-            return false;
+        private LoggingLevel GetLogLevel(string logLevel) {
+            LoggingLevel level = LoggingLevel.NOT_SET;
+            if (logLevel == "V") {
+                level = LoggingLevel.TRACE;
+            } else if (logLevel == "D") {
+                level = LoggingLevel.DEBUG;
+            } else if (logLevel == "I") {
+                level = LoggingLevel.INFO;
+            } else if (logLevel == "W") {
+                level = LoggingLevel.WARN;
+            } else if (logLevel == "E") {
+                level = LoggingLevel.ERROR;
+            } else if (logLevel == "F") {
+                level = LoggingLevel.FATAL;
+            }
+            return level;
         }
     }
 }
