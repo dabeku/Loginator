@@ -23,7 +23,9 @@ Here is how it looks like:
 
 ## TODO (from most to least important)
 
-* Add WiX installer
+* Automatc version upgrade
+* Test with log4j and log4net
+* Documentation for installation
 * Other data sources (database, file, etc.) via polling
 
 ## Chainsaw logging
