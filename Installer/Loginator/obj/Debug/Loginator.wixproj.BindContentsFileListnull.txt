@@ -25,7 +25,6 @@ C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Debug\\StructureMap.xml
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Debug\\NLog.config
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Debug\\Loginator.pdb
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Debug\\GalaSoft.MvvmLight.Extras.xml
-C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Debug\\Logs\log.txt
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Debug\\Backend.pdb
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Debug\\Backend.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Debug\\GalaSoft.MvvmLight.dll
