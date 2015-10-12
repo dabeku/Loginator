@@ -65,12 +65,46 @@
   <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <HeatDirectory RunAsSeparateProcess="$(RunWixToolsOutOfProc)" NoLogo="true" OutputFile="Generated.wxs" Directory="%(ProjectReference.RootDir)%(ProjectReference.Directory)bin\$(Configuration)" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="ApplicationGrp" AutogenerateGuids="false" GenerateGuidsNow="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BuildLocation" />
   </Target>
-  <Target Name="AfterBuild">
+  <!--<Target Name="AfterBuild">
     <CreateProperty Value="$([System.DateTime]::Now.ToString('yyyyMMdd-HHmmss'))">
       <Output TaskParameter="Value" PropertyName="DateString" />
     </CreateProperty>
     <Move SourceFiles="$(TargetPath)" DestinationFiles="$(TargetDir)Installer_$(DateString).msi" />
+  </Target>-->
+
+  <UsingTask TaskName="RenameToFileWithVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <PathToInstaller ParameterType="System.String" Required="true" />
+      <PathToVersion ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Core" />
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          string[] lines = File.ReadAllLines(PathToVersion);
+          foreach (var line in lines) {
+              string[] splittedLine = line.Split(new string[] { "=" }, StringSplitOptions.None);
+              if (splittedLine[0].Trim() == "versionName") {
+                  string newFileName = Path.GetDirectoryName(PathToInstaller) + "\\Loginator_v" + splittedLine[1].Trim() + ".msi";
+                  File.Delete(newFileName);
+                  File.Move(PathToInstaller, newFileName);
+                  break;
+              }
+          }
+          ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="AfterBuild">
+    <RenameToFileWithVersion
+      PathToInstaller="$(TargetPath)"
+      PathToVersion="%(ProjectReference.RootDir)%(ProjectReference.Directory)Version.txt"
+  />
   </Target>
+
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Wix.targets.
