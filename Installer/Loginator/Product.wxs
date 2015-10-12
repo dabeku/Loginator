@@ -25,6 +25,7 @@
     <Feature Id="ProductFeature" Title="Loginator" Level="1">
       <Feature Id="Application" Title="Application" Level="1" TypicalDefault="install">
         <ComponentGroupRef Id="ApplicationGrp"/>
+        <ComponentGroupRef Id="ApplicationManualGrp"/>
       </Feature>
     </Feature>
   </Product>
@@ -39,6 +40,7 @@
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="DesktopFolder" SourceName="Desktop"/>
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="Loginator"/>
       </Directory>

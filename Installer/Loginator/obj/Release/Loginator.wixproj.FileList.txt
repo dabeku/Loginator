@@ -6,3 +6,4 @@ obj\Release\Product.wixobj
 obj\Release\Loginator.wixproj.BindContentsFileListnull.txt
 obj\Release\Loginator.wixproj.BindOutputsFileListnull.txt
 obj\Release\Loginator.wixproj.BindBuiltOutputsFileListnull.txt
+obj\Release\Application.wixobj

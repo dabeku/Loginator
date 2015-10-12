@@ -10,3 +10,5 @@ C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\StructureMap.xml
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\bin\Release\StructureMap.Net4.pdb
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Release\Common.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Release\Common.pdb
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Release\Common.L10n.Language.resources
+C:\Users\Daniel\Documents\GitHub\Loginator\Common\obj\Release\Common.csproj.GenerateResource.Cache

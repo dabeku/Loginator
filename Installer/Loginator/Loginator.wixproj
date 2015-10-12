@@ -26,6 +26,7 @@
     <DefineConstants>Release;BuildLocation=$(SolutionDir)Loginator\bin\$(Configuration)\</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Application.wxs" />
     <Compile Include="Generated.wxs" />
     <Compile Include="GUI\WixUI_InstallDir.wxs" />
     <Compile Include="Product.wxs" />
@@ -35,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="transform.xslt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Loginator\Loginator.csproj">
@@ -63,7 +65,7 @@
   </PropertyGroup>
   <Import Project="$(WixTargetsPath)" />
   <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <HeatDirectory RunAsSeparateProcess="$(RunWixToolsOutOfProc)" NoLogo="true" OutputFile="Generated.wxs" Directory="%(ProjectReference.RootDir)%(ProjectReference.Directory)bin\$(Configuration)" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="ApplicationGrp" AutogenerateGuids="false" GenerateGuidsNow="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BuildLocation" />
+    <HeatDirectory RunAsSeparateProcess="$(RunWixToolsOutOfProc)" NoLogo="true" OutputFile="Generated.wxs" Directory="%(ProjectReference.RootDir)%(ProjectReference.Directory)bin\$(Configuration)" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="ApplicationGrp" AutogenerateGuids="false" GenerateGuidsNow="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BuildLocation" Transforms="transform.xslt" />
   </Target>
   <!--<Target Name="AfterBuild">
     <CreateProperty Value="$([System.DateTime]::Now.ToString('yyyyMMdd-HHmmss'))">
@@ -71,7 +73,6 @@
     </CreateProperty>
     <Move SourceFiles="$(TargetPath)" DestinationFiles="$(TargetDir)Installer_$(DateString).msi" />
   </Target>-->
-
   <UsingTask TaskName="RenameToFileWithVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
       <PathToInstaller ParameterType="System.String" Required="true" />
@@ -81,8 +82,7 @@
       <Reference Include="System.Core" />
       <Using Namespace="System" />
       <Using Namespace="System.IO" />
-      <Code Type="Fragment" Language="cs">
-        <![CDATA[
+      <Code Type="Fragment" Language="cs"><![CDATA[
           string[] lines = File.ReadAllLines(PathToVersion);
           foreach (var line in lines) {
               string[] splittedLine = line.Split(new string[] { "=" }, StringSplitOptions.None);
@@ -93,18 +93,12 @@
                   break;
               }
           }
-          ]]>
-      </Code>
+          ]]></Code>
     </Task>
   </UsingTask>
-
   <Target Name="AfterBuild">
-    <RenameToFileWithVersion
-      PathToInstaller="$(TargetPath)"
-      PathToVersion="%(ProjectReference.RootDir)%(ProjectReference.Directory)Version.txt"
-  />
+    <RenameToFileWithVersion PathToInstaller="$(TargetPath)" PathToVersion="%(ProjectReference.RootDir)%(ProjectReference.Directory)Version.txt" />
   </Target>
-
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Wix.targets.

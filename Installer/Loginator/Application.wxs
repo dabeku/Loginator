@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <Component Id="DesktopShortcut" Directory="INSTALLFOLDER" Guid="{4522EE59-AD31-4BF6-AB80-2E4AD824B5DF}">
+      <File Id="filApplicationExe" KeyPath="yes" Source="$(var.BuildLocation)\Loginator.exe">
+        <Shortcut Id="scDesktop" Directory="DesktopFolder" Name="Loginator"
+                  Description="Display logs in realtime"
+                  Icon="ShortcutIcon.exe"
+                  WorkingDirectory='INSTALLFOLDER' Advertise="yes">
+          <Icon Id="ShortcutIcon.exe" SourceFile="$(var.BuildLocation)\Loginator.exe" />
+        </Shortcut>
+      </File>
+    </Component>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ApplicationManualGrp">
+      <ComponentRef Id="DesktopShortcut" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>

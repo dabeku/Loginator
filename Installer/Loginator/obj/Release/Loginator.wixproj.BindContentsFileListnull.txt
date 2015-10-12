@@ -6,7 +6,6 @@ C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\System.Windows
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\AutoMapper.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\StructureMap.Net4.pdb
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\StructureMap.dll
-C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\Loginator.exe
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\Microsoft.Practices.ServiceLocation.pdb
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\GalaSoft.MvvmLight.xml
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\GalaSoft.MvvmLight.Platform.pdb
@@ -16,6 +15,7 @@ C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\NLog.xml
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\GalaSoft.MvvmLight.Extras.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\Microsoft.Practices.ServiceLocation.xml
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\NLog.dll
+C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\Loginator.exe
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\StructureMap.Net4.dll
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\AutoMapper.xml
 C:\Users\Daniel\Documents\GitHub\Loginator\Loginator\bin\Release\\Microsoft.Practices.ServiceLocation.dll

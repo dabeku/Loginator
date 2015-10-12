@@ -9,6 +9,8 @@ namespace Common {
 
         public const int DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL = 1000;
 
+        public const string STRING_NEWLINE = "\n";
+
         public const string NAMESPACE_SPLITTER = ".";
         public const string NAMESPACE_LOGCAT = "Logcat";
         public const string NAMESPACE_GLOBAL = "Global (namespace)";

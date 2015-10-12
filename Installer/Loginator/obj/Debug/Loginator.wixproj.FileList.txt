@@ -6,3 +6,4 @@ C:\Users\Daniel\Documents\GitHub\Loginator\Installer\Loginator\bin\Debug\Loginat
 obj\Debug\Loginator.wixproj.BindContentsFileListnull.txt
 obj\Debug\Loginator.wixproj.BindOutputsFileListnull.txt
 obj\Debug\Loginator.wixproj.BindBuiltOutputsFileListnull.txt
+obj\Debug\Application.wixobj
