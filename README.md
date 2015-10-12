@@ -23,9 +23,7 @@ Here is how it looks like:
 
 ## TODO (from most to least important)
 
-* Add desktop link when installing
-* Add application icon
-* Automatc version upgrade
+* Export function
 * Test with log4j and log4net
 * Documentation for installation
 * Other data sources (database, file, etc.) via polling
