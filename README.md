@@ -30,7 +30,7 @@ Here is how it looks like:
 
 ## Chainsaw logging
 
-NLog (.net):
+* NLog (.net):
 
 In your logging app add a new target
 ```
@@ -51,11 +51,11 @@ and add the logger
 2. Find your device ID: /[path-to]/Android/sdk/platform-tools/adb devices
 3. Forward the logcat output to your machine with Loginator running
 
-Windows:
+* Windows:
 
 [path-to]\Android\sdk\platform-tools\adb.exe -s [your-device-id] logcat | ncat.exe -u [ip-where-loginator-runs] 7081
 
-Mac:
+* Mac:
 
 cat <(/[path-to]/Android/sdk/platform-tools/adb -s [your-device-id] logcat) | nc -u [ip-where-loginator-runs] 7081
 
