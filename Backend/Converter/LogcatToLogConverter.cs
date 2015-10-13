@@ -29,10 +29,7 @@ namespace Backend.Converter {
             }
 
             try {
-                string[] lines = text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                if (lines.Length == 1) {
-                    lines = text.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                }
+                string[] lines = text.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
 
                 IList<Log> logs = new List<Log>();
 

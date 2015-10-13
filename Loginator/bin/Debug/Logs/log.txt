@@ -1,0 +1,4 @@
+2015-10-13 09:48:24:966 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-10-13 09:48:25:864 | Loginator.MainWindow | Info | No new version available. Current: '3' | 
+2015-10-13 09:54:52:934 | Loginator.App | Info | [OnStartup] Application successfully started | 
+2015-10-13 09:54:53:594 | Loginator.MainWindow | Info | No new version available. Current: '3' | 
