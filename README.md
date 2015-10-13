@@ -23,6 +23,7 @@ Here is how it looks like:
 
 ## TODO (from most to least important)
 
+* Bugfix (Logcat): Windows ncat.exe doesn't show complete line
 * Export function
 * Test with log4j and log4net
 * Documentation for installation
