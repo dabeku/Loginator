@@ -55,6 +55,8 @@ and add the logger
 
 [path-to]\Android\sdk\platform-tools\adb.exe -s [your-device-id] logcat | ncat.exe -u [ip-where-loginator-runs] 7081
 
+Please note: As ncat.exe is not part of Windows, you have to download nmap first and use ncat.exe from there. To do that simply visit https://nmap.org/download.html locate and download the "Latest command-line zipfile". Unpack the .zip and take the files: libeay32.dll, ncat.exe and ssleay32.dll and copy them in a separate folder. You now have a valid ncat.exe application.
+
 * Mac:
 
 cat <(/[path-to]/Android/sdk/platform-tools/adb -s [your-device-id] logcat) | nc -u [ip-where-loginator-runs] 7081
