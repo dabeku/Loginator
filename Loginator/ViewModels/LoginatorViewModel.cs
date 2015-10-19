@@ -81,6 +81,7 @@ namespace LogApplication.ViewModels {
             get { return selectedLog; }
             set {
                 selectedLog = value;
+                SelecteNamespaceViewModel = Namespaces.Flatten(x => x.Children).FirstOrDefault(model => model.Name.Equals(selectedLog.Namespace));
                 OnPropertyChanged("SelectedLog");
             }
         }
@@ -90,6 +91,21 @@ namespace LogApplication.ViewModels {
         public OrderedObservableCollection Logs { get; set; }
         public ObservableCollection<NamespaceViewModel> Namespaces { get; set; }
         public ObservableCollection<ApplicationViewModel> Applications { get; set; }
+
+        private NamespaceViewModel _selecteNamespaceViewModel;
+        public NamespaceViewModel SelecteNamespaceViewModel {
+            get { return _selecteNamespaceViewModel; }
+            set {
+                if (_selecteNamespaceViewModel != null) {
+                    _selecteNamespaceViewModel.IsHighlighted = false;
+                }
+                _selecteNamespaceViewModel = value;
+                if (_selecteNamespaceViewModel != null) {
+                    _selecteNamespaceViewModel.IsHighlighted = true;
+                }
+                OnPropertyChanged("SelectedLog");
+            }
+        }
 
         public LoginatorViewModel(IApplicationConfiguration applicationConfiguration, IConfigurationDao configurationDao) {
             ApplicationConfiguration = applicationConfiguration;
@@ -377,6 +393,7 @@ namespace LogApplication.ViewModels {
         }
 
         private ICommand openConfigurationCommand;
+
         public ICommand OpenConfigurationCommand {
             get {
                 if (openConfigurationCommand == null) {

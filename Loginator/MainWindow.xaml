@@ -130,7 +130,8 @@
             </ListView>
             <GridSplitter Grid.Row="1" ResizeBehavior="BasedOnAlignment" ResizeDirection="Rows" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <TreeView Grid.Row="2"
-                ItemsSource="{Binding Namespaces}">
+                ItemsSource="{Binding Namespaces}"
+                    >
                 <TreeView.Resources>
                     <Style TargetType="TreeViewItem">
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded}"/>
@@ -139,6 +140,15 @@
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                         <StackPanel Orientation="Horizontal" Height="18">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsHighlighted}" Value="true">
+                                            <Setter Property="Background" Value="LightGoldenrodYellow"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
                             <CheckBox Focusable="False" IsChecked="{Binding IsChecked}" VerticalAlignment="Center" />
                             <Label>
                                 <Label.Content>

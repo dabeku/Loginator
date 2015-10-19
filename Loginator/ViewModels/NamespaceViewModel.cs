@@ -119,6 +119,7 @@ namespace LogApplication.ViewModels {
         }
 
         private int countFatal;
+
         public int CountFatal {
             get {
                 return countFatal;
@@ -154,7 +155,21 @@ namespace LogApplication.ViewModels {
                 return fullname;
             }
         }
-        
+
+        private bool isHighlighted;
+        public bool IsHighlighted
+        {
+            get
+            {
+                return isHighlighted;
+            }
+            set
+            {
+                isHighlighted = value;
+                OnPropertyChanged("IsHighlighted");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string property) {
