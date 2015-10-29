@@ -23,7 +23,7 @@ Here is how it looks like:
 
 ## TODO (from most to least important)
 
-* Bugfix (Logcat): Windows ncat.exe doesn't show complete line
+* Alphabetically sort context fields
 * Export function
 * Test with log4j and log4net
 * Documentation for installation
@@ -49,7 +49,9 @@ and add the logger
 ## Logcat logging
 
 1. Connect your Android device to your PC or Mac via USB
+
 2. Find your device ID: /[path-to]/Android/sdk/platform-tools/adb devices
+
 3. Forward the logcat output to your machine with Loginator running
 
 * Windows:
