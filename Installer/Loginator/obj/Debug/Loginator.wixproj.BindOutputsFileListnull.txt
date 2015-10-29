@@ -1,2 +1,0 @@
-C:\Users\Feitzi\Documents\GitHub\Loginator\Installer\Loginator\bin\Debug\Loginator.msi
-C:\Users\Feitzi\Documents\GitHub\Loginator\Installer\Loginator\bin\Debug\Loginator.wixpdb

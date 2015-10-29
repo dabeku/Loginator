@@ -1,9 +1,0 @@
-C:\Users\Daniel\Documents\GitHub\Loginator\Installer\Loginator\bin\Release\Loginator.msi
-C:\Users\Daniel\Documents\GitHub\Loginator\Installer\Loginator\bin\Release\Loginator.wixpdb
-obj\Release\Generated.wixobj
-obj\Release\pth4CEFB152AA33524E52B9E8E8325CCABF\WixUI_InstallDir.wixobj
-obj\Release\Product.wixobj
-obj\Release\Loginator.wixproj.BindContentsFileListnull.txt
-obj\Release\Loginator.wixproj.BindOutputsFileListnull.txt
-obj\Release\Loginator.wixproj.BindBuiltOutputsFileListnull.txt
-obj\Release\Application.wixobj
