@@ -23,19 +23,12 @@ namespace LogApplication.ViewModels {
                         ApplicationViewModel.UpdateByNamespaceChange(this);
                     }
                 }
-                //if (isChecked && Parent != null) {
-                //    // Bubble up
-                //    Parent.IsChecked = true;
-                //}
-                //if (!isChecked) {
-                    // Bubble down
+                
                 if (Children != null) {
                     foreach (var child in Children) {
                         child.IsChecked = isChecked;
                     }
                 }
-                    
-                //}
                 // TODO: Use ReflectionUtil here or nameof()
                 OnPropertyChanged("IsChecked");
             }
@@ -157,14 +150,11 @@ namespace LogApplication.ViewModels {
         }
 
         private bool isHighlighted;
-        public bool IsHighlighted
-        {
-            get
-            {
+        public bool IsHighlighted {
+            get {
                 return isHighlighted;
             }
-            set
-            {
+            set {
                 isHighlighted = value;
                 OnPropertyChanged("IsHighlighted");
             }

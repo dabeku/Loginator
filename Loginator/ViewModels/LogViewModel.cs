@@ -17,22 +17,8 @@ namespace LogApplication.ViewModels {
         public string Application { get; set; }
         public string Thread { get; set; }
         public string Context { get; set; }
-        //public IEnumerable<Property> Properties { get; set; }
-
-        //private bool isVisible;
-        //public bool IsVisible {
-        //    get {
-        //        return isVisible;
-        //    }
-        //    set {
-        //        isVisible = value;
-        //        OnPropertyChanged("IsVisible");
-        //    }
-        //}
-
-        public LogViewModel() {
-            //IsVisible = false;
-        }
+        
+        public LogViewModel() { }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

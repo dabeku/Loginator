@@ -81,7 +81,7 @@ namespace LogApplication.ViewModels {
             get { return selectedLog; }
             set {
                 selectedLog = value;
-                SelecteNamespaceViewModel = Namespaces.Flatten(x => x.Children).FirstOrDefault(model => model.Name.Equals(selectedLog.Namespace));
+                SetNamespaceHighlight(selectedLog);
                 OnPropertyChanged("SelectedLog");
             }
         }
@@ -92,18 +92,18 @@ namespace LogApplication.ViewModels {
         public ObservableCollection<NamespaceViewModel> Namespaces { get; set; }
         public ObservableCollection<ApplicationViewModel> Applications { get; set; }
 
-        private NamespaceViewModel _selecteNamespaceViewModel;
-        public NamespaceViewModel SelecteNamespaceViewModel {
-            get { return _selecteNamespaceViewModel; }
+        private NamespaceViewModel _selectedNamespaceViewModel;
+        public NamespaceViewModel SelectedNamespaceViewModel {
+            get { return _selectedNamespaceViewModel; }
             set {
-                if (_selecteNamespaceViewModel != null) {
-                    _selecteNamespaceViewModel.IsHighlighted = false;
+                if (_selectedNamespaceViewModel != null) {
+                    _selectedNamespaceViewModel.IsHighlighted = false;
                 }
-                _selecteNamespaceViewModel = value;
-                if (_selecteNamespaceViewModel != null) {
-                    _selecteNamespaceViewModel.IsHighlighted = true;
+                _selectedNamespaceViewModel = value;
+                if (_selectedNamespaceViewModel != null) {
+                    _selectedNamespaceViewModel.IsHighlighted = true;
                 }
-                OnPropertyChanged("SelectedLog");
+                OnPropertyChanged("SelectedNamespaceViewModel");
             }
         }
 
@@ -281,6 +281,16 @@ namespace LogApplication.ViewModels {
             }
         }
 
+        private void SetNamespaceHighlight(LogViewModel log) {
+            if (selectedLog != null) {
+                SelectedNamespaceViewModel = Namespaces.Flatten(x => x.Children).FirstOrDefault(model => model.Fullname.Equals(selectedLog.Application + Constants.NAMESPACE_SPLITTER + selectedLog.Namespace));
+            }
+        }
+
+        private void ClearNamespaceHighlight() {
+            Namespaces.Flatten(x => x.Children).ToList().ForEach(m => m.IsHighlighted = false);
+        }
+
         private void SetLogCountByLevel(LogViewModel log, NamespaceViewModel ns) {
             ns.Count++;
             if (log.Level == LoggingLevel.TRACE) {
@@ -320,6 +330,7 @@ namespace LogApplication.ViewModels {
                     foreach (var ns in Namespaces) {
                         ResetAllCount(ns);
                     }
+                    ClearNamespaceHighlight();
                 }
             });
         }
