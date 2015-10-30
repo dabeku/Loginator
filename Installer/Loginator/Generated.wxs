@@ -2,101 +2,96 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="INSTALLFOLDER">
-            <Component Id="cmpFD65F52CD5EC0B46A750F8EEFC3D4422" Guid="{5A3BA59F-A5AB-4FA8-B4E4-331C0F1DDE29}">
+            <Component Id="cmpFD65F52CD5EC0B46A750F8EEFC3D4422" Guid="{B46FF1FD-A96C-4CF0-9DAE-E9A1CD3D988E}">
                 <File Id="fil1F7E777B326B02F60B86F747002F8605" KeyPath="yes" Source="$(var.BuildLocation)\AutoMapper.dll" />
             </Component>
-            <Component Id="cmp46C017C55E8475A5DADE1FC7176D3149" Guid="{2FBB6DC4-2117-48EE-AE68-11B84C517B8F}">
+            <Component Id="cmp46C017C55E8475A5DADE1FC7176D3149" Guid="{4AAA238D-57F4-49AC-872A-3668B1105D1F}">
                 <File Id="filBDEE9B5D3DB78199A411BCA41D9460F9" KeyPath="yes" Source="$(var.BuildLocation)\AutoMapper.xml" />
             </Component>
-            <Component Id="cmpC4FD4BAB0F5BBBF32F1F8DB01F9AF212" Guid="{F0A5CDF9-D341-4E91-9F36-32C23FE6E92A}">
+            <Component Id="cmpC4FD4BAB0F5BBBF32F1F8DB01F9AF212" Guid="{BC03A787-01EA-46C6-BB4D-7EF2C67C35D4}">
                 <File Id="filFEE5BF91A236ADC7ED4FD8EEEDEF1781" KeyPath="yes" Source="$(var.BuildLocation)\Backend.dll" />
             </Component>
-            <Component Id="cmp9EFAF0149552AD4E7692BA29FF7D9B02" Guid="{4C7C3A47-F8E5-4476-88A1-0F0DE3274E56}">
+            <Component Id="cmp9EFAF0149552AD4E7692BA29FF7D9B02" Guid="{BB08BA72-EFAC-47EF-9B02-683B2F802711}">
                 <File Id="filECAB3D0E6969C7CEF9F920D61F963E17" KeyPath="yes" Source="$(var.BuildLocation)\Backend.pdb" />
             </Component>
-            <Component Id="cmpB53A65C41CF06BE249FDBED7F7478485" Guid="{A4B731D2-1595-4566-B6AB-16FD359B1B9D}">
+            <Component Id="cmpB53A65C41CF06BE249FDBED7F7478485" Guid="{C89CDFA3-3CEB-4D8C-93B2-9C50AD641A08}">
                 <File Id="fil0B0CB3F5EE7251DE8DCA6F2A404CF409" KeyPath="yes" Source="$(var.BuildLocation)\Common.dll" />
             </Component>
-            <Component Id="cmp3B61CB729F4933CADF9F820CEF8847C1" Guid="{2B280214-43CA-4298-B121-3757DC763130}">
+            <Component Id="cmp3B61CB729F4933CADF9F820CEF8847C1" Guid="{9F875A91-43D1-43D2-A67F-51C6439BFCA8}">
                 <File Id="fil73CD90BFD56B9F64DE0DC5C53E0E51D2" KeyPath="yes" Source="$(var.BuildLocation)\Common.pdb" />
             </Component>
-            <Component Id="cmp0A996586383240FA3E04EF819E036618" Guid="{117BF06E-4318-4DA9-9B30-C693F443132B}">
+            <Component Id="cmp0A996586383240FA3E04EF819E036618" Guid="{327762E0-0C6C-439D-9718-D73DA165F31E}">
                 <File Id="filFEFD2783E5DA4CE0FD0CC448B98B8282" KeyPath="yes" Source="$(var.BuildLocation)\GalaSoft.MvvmLight.dll" />
             </Component>
-            <Component Id="cmp17BFF5FB30D3632422DA2006E44AD968" Guid="{9CE241F1-AB6B-4CEE-9B22-D5E8BFF6B952}">
+            <Component Id="cmp17BFF5FB30D3632422DA2006E44AD968" Guid="{9F3EF4B6-D1FE-41B4-BEA7-1622958416D8}">
                 <File Id="fil9644536B770B8F5B869068B0AA7CED33" KeyPath="yes" Source="$(var.BuildLocation)\GalaSoft.MvvmLight.Extras.dll" />
             </Component>
-            <Component Id="cmpA9858AEE074BA5FF4FF0B5CD1F5060D3" Guid="{539468B0-633D-4A76-87EF-4C1D552D3819}">
+            <Component Id="cmpA9858AEE074BA5FF4FF0B5CD1F5060D3" Guid="{EE4999D4-8302-4513-BC3C-453ACF0A7814}">
                 <File Id="fil0665D199B25D144507EB7CC43366DA59" KeyPath="yes" Source="$(var.BuildLocation)\GalaSoft.MvvmLight.Extras.pdb" />
             </Component>
-            <Component Id="cmp2B5A2FE464CA1F7FF7E66D03CBDEAEC6" Guid="{6F35B98A-FDBF-48FB-9633-709990A6D252}">
+            <Component Id="cmp2B5A2FE464CA1F7FF7E66D03CBDEAEC6" Guid="{9D80F5A5-1D7A-4B42-90F5-90BE6AAD0C19}">
                 <File Id="filE29801BA37D9EA3FF2FBD4C27F224FD6" KeyPath="yes" Source="$(var.BuildLocation)\GalaSoft.MvvmLight.Extras.xml" />
             </Component>
-            <Component Id="cmpC5323B58D6FE9921DCBD0DA02542A9EA" Guid="{F526D984-094D-4BCE-812F-CEF6F8EE6163}">
+            <Component Id="cmpC5323B58D6FE9921DCBD0DA02542A9EA" Guid="{DB52BB9D-C3DF-4BAD-93B7-FF9CC1157D03}">
                 <File Id="filCA26613FF692C3372A3E128988E57B91" KeyPath="yes" Source="$(var.BuildLocation)\GalaSoft.MvvmLight.pdb" />
             </Component>
-            <Component Id="cmpBB590427EC85B15F8307BAB5F2C0D4FD" Guid="{D56B83EE-80B6-42F7-A586-3E1A2E9DA145}">
+            <Component Id="cmpBB590427EC85B15F8307BAB5F2C0D4FD" Guid="{30A4DE8C-8F3D-41BA-AFA1-76F2577A2090}">
                 <File Id="filC9FFF83F6E76026272222D6FF39444A2" KeyPath="yes" Source="$(var.BuildLocation)\GalaSoft.MvvmLight.Platform.dll" />
             </Component>
-            <Component Id="cmp429BF624042409EF870DB4BAFA8C779F" Guid="{68A33A6C-D67F-4E3F-8E22-301ACDFAA817}">
+            <Component Id="cmp429BF624042409EF870DB4BAFA8C779F" Guid="{DB6F4AE7-04D6-4FDA-BE75-B2D0A7DD93AF}">
                 <File Id="fil725498A756ED54FA1DC84D5734E3AE6D" KeyPath="yes" Source="$(var.BuildLocation)\GalaSoft.MvvmLight.Platform.pdb" />
             </Component>
-            <Component Id="cmp0CE728A49B1A18E1D2A82C1FB62839E5" Guid="{50404CD4-8905-4B69-BEFB-9C9FF98708D8}">
+            <Component Id="cmp0CE728A49B1A18E1D2A82C1FB62839E5" Guid="{1B3799A5-0578-4DDB-92FC-4A99E41424F2}">
                 <File Id="fil8C07BFCA04BBE43D6943B75B2EBC1866" KeyPath="yes" Source="$(var.BuildLocation)\GalaSoft.MvvmLight.Platform.xml" />
             </Component>
-            <Component Id="cmp0E0A13BC45FC27B4A39F923743C93F33" Guid="{E1473A26-A6A3-4DA6-BF63-647F3D7C6F45}">
+            <Component Id="cmp0E0A13BC45FC27B4A39F923743C93F33" Guid="{EAB15597-F518-4251-B1EF-3C27EFEB2CFC}">
                 <File Id="fil5126DDA9D3089E8C4D8D8DC5E5A709A6" KeyPath="yes" Source="$(var.BuildLocation)\GalaSoft.MvvmLight.xml" />
             </Component>
-            <Component Id="cmp536B01C817EC16C4160ED2FD1533B222" Guid="{3422DE83-C38B-4DBB-B8AF-CF7E03A26CBD}">
+            <Component Id="cmp536B01C817EC16C4160ED2FD1533B222" Guid="{CD63F1B6-5B73-4180-BCD8-1A6353E2EE21}">
                 <wix:CreateFolder xmlns:wix="http://schemas.microsoft.com/wix/2006/wi" />
             </Component>
-            <Component Id="cmpF1A743BDB5681F970B3C493365D94C14" Guid="{B901685F-446D-4AD0-93B3-F53BE3BD7B6C}">
+            <Component Id="cmpF1A743BDB5681F970B3C493365D94C14" Guid="{1E250CC6-B6E3-42B7-9F38-76B12C19494C}">
                 <File Id="fil14CA4538D698194C70FE7B4DBCBAE474" KeyPath="yes" Source="$(var.BuildLocation)\Loginator.exe.config" />
             </Component>
-            <Component Id="cmp3CD2FE4D1848B1528E1DEB7BB45C561A" Guid="{2E8EE433-C935-4BFB-AA93-ED1F8173780C}">
+            <Component Id="cmp3CD2FE4D1848B1528E1DEB7BB45C561A" Guid="{C20B8C1E-A6A3-4994-A09F-E99EBEF8E1C5}">
                 <File Id="filE242A764DF65959F5065063258556A13" KeyPath="yes" Source="$(var.BuildLocation)\Loginator.pdb" />
             </Component>
-            <Component Id="cmpF2F1C15A47B64F045101B1AE5B4D6054" Guid="{AAF715E9-BD07-4881-84F4-2D875D902659}">
+            <Component Id="cmpF2F1C15A47B64F045101B1AE5B4D6054" Guid="{FCF83A47-B4E7-4430-A94C-D3EDCD1AA90C}">
                 <File Id="filC342596B66E98254BB6E1CFFE50AE4AA" KeyPath="yes" Source="$(var.BuildLocation)\Microsoft.Practices.ServiceLocation.dll" />
             </Component>
-            <Component Id="cmpC46009BA6A5B5F8DF9BEFCAD39146906" Guid="{F41CEC92-2C05-4365-B5AB-D908E994BB3E}">
+            <Component Id="cmpC46009BA6A5B5F8DF9BEFCAD39146906" Guid="{2C3F2E3F-A077-44B2-B3AA-87FF5235D9F7}">
                 <File Id="fil4E1754043F4A85422FD5FE1F7991ABCC" KeyPath="yes" Source="$(var.BuildLocation)\Microsoft.Practices.ServiceLocation.pdb" />
             </Component>
-            <Component Id="cmp6B78BD7805E072190247D7503A0E7659" Guid="{F40A2341-49E8-4F55-957B-4D180E0A0603}">
+            <Component Id="cmp6B78BD7805E072190247D7503A0E7659" Guid="{94C4A0B6-8DCA-4E6C-B3DC-F1A7F3B89C13}">
                 <File Id="fil97C995578E25C0BCDEA9A9A8984D1772" KeyPath="yes" Source="$(var.BuildLocation)\Microsoft.Practices.ServiceLocation.xml" />
             </Component>
-            <Component Id="cmp42CE9AE95732AA34478329FB9DE90B9C" Guid="{873F4F77-56AD-4C84-8B77-ACE9193D2026}">
+            <Component Id="cmp42CE9AE95732AA34478329FB9DE90B9C" Guid="{0B64F980-5D8A-4CBD-83F5-C917DEDF8D25}">
                 <File Id="filD7AACEE505C0A6D9F0953957C6B91C28" KeyPath="yes" Source="$(var.BuildLocation)\NLog.config" />
             </Component>
-            <Component Id="cmpB7F1EBE42DCB1051B92D42C1EF84E2F9" Guid="{3DBEA404-643C-4981-9A64-76D62A9EAB3B}">
+            <Component Id="cmpB7F1EBE42DCB1051B92D42C1EF84E2F9" Guid="{CAE8CBC6-57B5-4593-A8F4-206E945B5AF7}">
                 <File Id="filA09ADF42C6343B9B7C7780D266455CC4" KeyPath="yes" Source="$(var.BuildLocation)\NLog.dll" />
             </Component>
-            <Component Id="cmpAF162B14FA6391E4D0D34D9485A3CBEB" Guid="{D177F73B-DF87-441E-9054-25EFBD90EA47}">
+            <Component Id="cmpAF162B14FA6391E4D0D34D9485A3CBEB" Guid="{0F62E732-ED90-453E-8633-FD6E805CEEFD}">
                 <File Id="fil938BF1D1B479C73F0CECCBD51683AA0E" KeyPath="yes" Source="$(var.BuildLocation)\NLog.xml" />
             </Component>
-            <Component Id="cmp254EDC25CC89C3B2132F9CD3F3B23D84" Guid="{719A7E08-0658-4CBA-847B-018BBB59C15D}">
+            <Component Id="cmp254EDC25CC89C3B2132F9CD3F3B23D84" Guid="{02036ECC-7C42-4E9C-AF22-B5663ECD4045}">
                 <File Id="fil449FEA3C87123105B6365EFECB507298" KeyPath="yes" Source="$(var.BuildLocation)\StructureMap.dll" />
             </Component>
-            <Component Id="cmpBB087CB17CD9C8719CB5F785BFC43498" Guid="{CD25F612-BC80-4157-B20E-C20D74FC8D9A}">
+            <Component Id="cmpBB087CB17CD9C8719CB5F785BFC43498" Guid="{D19A7D02-A6B6-4D5A-A4AA-4545A588301A}">
                 <File Id="filBCE870C69481872682CCA1EF17CB76E6" KeyPath="yes" Source="$(var.BuildLocation)\StructureMap.Net4.dll" />
             </Component>
-            <Component Id="cmpC4A5D31BC91D4502662864F0B63A48E9" Guid="{544E83D1-B437-4BE1-8E27-8ECC633F832C}">
+            <Component Id="cmpC4A5D31BC91D4502662864F0B63A48E9" Guid="{F8B62082-0B36-432D-BD99-BDF52E90C3E5}">
                 <File Id="fil2D378D51489EA769073CB06045E95E18" KeyPath="yes" Source="$(var.BuildLocation)\StructureMap.Net4.pdb" />
             </Component>
-            <Component Id="cmpF8D81986CD59E01E8EA5DF5B1EA2D606" Guid="{875340A4-4979-4C2C-8DCD-D430985B2FB8}">
+            <Component Id="cmpF8D81986CD59E01E8EA5DF5B1EA2D606" Guid="{E43D8E45-4828-4677-A502-BF4D81365A24}">
                 <File Id="fil037EA891956E3BE9F4C772D8C45CB3D7" KeyPath="yes" Source="$(var.BuildLocation)\StructureMap.pdb" />
             </Component>
-            <Component Id="cmp55E933BB8F08C224739F0810AB11B4FA" Guid="{CBDB1906-B5BA-4E9A-8AAB-6322D6A22409}">
+            <Component Id="cmp55E933BB8F08C224739F0810AB11B4FA" Guid="{59E390C8-838E-4C87-9566-CF2059A2E955}">
                 <File Id="filCD7B0A9F524A38A302A02B462602EA4A" KeyPath="yes" Source="$(var.BuildLocation)\StructureMap.xml" />
             </Component>
-            <Component Id="cmp017BFB3832A5B110A2B3A350E13F2A5C" Guid="{E5132CE8-A81C-4C2D-A620-6501355258C0}">
+            <Component Id="cmp017BFB3832A5B110A2B3A350E13F2A5C" Guid="{21F5CFB8-7F11-4479-88C9-123DB67848BC}">
                 <File Id="fil17E34524E8398461D615894C92558FE9" KeyPath="yes" Source="$(var.BuildLocation)\System.Windows.Interactivity.dll" />
             </Component>
-            <Directory Id="dirCF01D5040FD9778C6964A1321276CBAE" Name="Logs">
-                <Component Id="cmp3EA63F45F8416B74AC44CFB86C77C0E9" Guid="{1E116D6D-B90D-4545-90ED-07F3DE44F6F2}">
-                    <File Id="filEAD8D406629BA2B8F34DE84E623E5F13" KeyPath="yes" Source="$(var.BuildLocation)\Logs\log.txt" />
-                </Component>
-            </Directory>
         </DirectoryRef>
     </Fragment>
     <Fragment>
@@ -131,7 +126,6 @@
             <ComponentRef Id="cmpF8D81986CD59E01E8EA5DF5B1EA2D606" />
             <ComponentRef Id="cmp55E933BB8F08C224739F0810AB11B4FA" />
             <ComponentRef Id="cmp017BFB3832A5B110A2B3A350E13F2A5C" />
-            <ComponentRef Id="cmp3EA63F45F8416B74AC44CFB86C77C0E9" />
         </ComponentGroup>
     </Fragment>
 </Wix>
