@@ -1,9 +1,0 @@
-obj\Debug\pth4CEFB152AA33524E52B9E8E8325CCABF\WixUI_InstallDir.wixobj
-obj\Debug\Product.wixobj
-obj\Debug\Generated.wixobj
-C:\Users\Daniel\Documents\GitHub\Loginator\Installer\Loginator\bin\Debug\Loginator.msi
-C:\Users\Daniel\Documents\GitHub\Loginator\Installer\Loginator\bin\Debug\Loginator.wixpdb
-obj\Debug\Loginator.wixproj.BindContentsFileListnull.txt
-obj\Debug\Loginator.wixproj.BindOutputsFileListnull.txt
-obj\Debug\Loginator.wixproj.BindBuiltOutputsFileListnull.txt
-obj\Debug\Application.wixobj

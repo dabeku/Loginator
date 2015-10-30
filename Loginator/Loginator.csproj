@@ -95,6 +95,7 @@
     <Compile Include="ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\IsEqualsConverter.cs" />
     <Compile Include="Converter\RadioButtonCheckedConverter.cs" />
     <Compile Include="ViewModels\ConfigurationViewModel.cs" />
     <Compile Include="ViewModels\ApplicationViewModel.cs" />
