@@ -29,8 +29,7 @@ namespace LogApplication.ViewModels {
                         child.IsChecked = isChecked;
                     }
                 }
-                // TODO: Use ReflectionUtil here or nameof()
-                OnPropertyChanged("IsChecked");
+                OnPropertyChanged(nameof(IsChecked));
             }
         }
 
@@ -41,7 +40,7 @@ namespace LogApplication.ViewModels {
             }
             set {
                 isExpanded = value;
-                OnPropertyChanged("IsExpanded");
+                OnPropertyChanged(nameof(IsExpanded));
             }
         }
 
@@ -52,7 +51,7 @@ namespace LogApplication.ViewModels {
             }
             set {
                 count = value;
-                OnPropertyChanged("Count");
+                OnPropertyChanged(nameof(Count));
             }
         }
 
@@ -63,7 +62,7 @@ namespace LogApplication.ViewModels {
             }
             set {
                 countTrace = value;
-                OnPropertyChanged("CountTrace");
+                OnPropertyChanged(nameof(CountTrace));
             }
         }
 
@@ -74,7 +73,7 @@ namespace LogApplication.ViewModels {
             }
             set {
                 countDebug = value;
-                OnPropertyChanged("CountDebug");
+                OnPropertyChanged(nameof(CountDebug));
             }
         }
 
@@ -85,7 +84,7 @@ namespace LogApplication.ViewModels {
             }
             set {
                 countInfo = value;
-                OnPropertyChanged("CountInfo");
+                OnPropertyChanged(nameof(CountInfo));
             }
         }
 
@@ -96,7 +95,7 @@ namespace LogApplication.ViewModels {
             }
             set {
                 countWarn = value;
-                OnPropertyChanged("CountWarn");
+                OnPropertyChanged(nameof(CountWarn));
             }
         }
 
@@ -107,7 +106,7 @@ namespace LogApplication.ViewModels {
             }
             set {
                 countError = value;
-                OnPropertyChanged("CountError");
+                OnPropertyChanged(nameof(CountError));
             }
         }
 
@@ -119,10 +118,24 @@ namespace LogApplication.ViewModels {
             }
             set {
                 countFatal = value;
-                OnPropertyChanged("CountFatal");
+                OnPropertyChanged(nameof(CountFatal));
             }
         }
-        
+
+        private bool isHighlighted;
+        public bool IsHighlighted
+        {
+            get
+            {
+                return isHighlighted;
+            }
+            set
+            {
+                isHighlighted = value;
+                OnPropertyChanged(nameof(IsHighlighted));
+            }
+        }
+
         public string Name { get; set; }
         public NamespaceViewModel Parent { get; set; }
         public ObservableCollection<NamespaceViewModel> Children { get; set; }
@@ -148,18 +161,7 @@ namespace LogApplication.ViewModels {
                 return fullname;
             }
         }
-
-        private bool isHighlighted;
-        public bool IsHighlighted {
-            get {
-                return isHighlighted;
-            }
-            set {
-                isHighlighted = value;
-                OnPropertyChanged("IsHighlighted");
-            }
-        }
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string property) {

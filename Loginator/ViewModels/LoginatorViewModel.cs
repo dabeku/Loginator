@@ -43,7 +43,7 @@ namespace LogApplication.ViewModels {
             get { return isActive; }
             set {
                 isActive = value;
-                OnPropertyChanged("IsActive");
+                OnPropertyChanged(nameof(IsActive));
             }
         }
         
@@ -53,7 +53,7 @@ namespace LogApplication.ViewModels {
             get { return numberOfLogsPerLevel; }
             set {
                 numberOfLogsPerLevel = value;
-                OnPropertyChanged("IsScrollingToBottom");
+                OnPropertyChanged(nameof(NumberOfLogsPerLevel));
             }
         }
 
@@ -63,7 +63,7 @@ namespace LogApplication.ViewModels {
             get { return searchCriteria; }
             set {
                 searchCriteria = value;
-                OnPropertyChanged("SearchCriteria");
+                OnPropertyChanged(nameof(SearchCriteria));
             }
         }
 
@@ -72,7 +72,7 @@ namespace LogApplication.ViewModels {
             get { return isInverted; }
             set {
                 isInverted = value;
-                OnPropertyChanged("IsInverted");
+                OnPropertyChanged(nameof(IsInverted));
             }
         }
 
@@ -82,7 +82,7 @@ namespace LogApplication.ViewModels {
             set {
                 selectedLog = value;
                 SetNamespaceHighlight(selectedLog);
-                OnPropertyChanged("SelectedLog");
+                OnPropertyChanged(nameof(SelectedLog));
             }
         }
 
@@ -103,7 +103,7 @@ namespace LogApplication.ViewModels {
                 if (_selectedNamespaceViewModel != null) {
                     _selectedNamespaceViewModel.IsHighlighted = true;
                 }
-                OnPropertyChanged("SelectedNamespaceViewModel");
+                OnPropertyChanged(nameof(SelectedNamespaceViewModel));
             }
         }
 

@@ -46,7 +46,7 @@ namespace LogApplication.ViewModels {
                 lock (ViewModelConstants.SYNC_OBJECT) {
                     UpdateByLogLevelChange(selectedMinLogLevel, value);
                     selectedMinLogLevel = value;
-                    OnPropertyChanged("SelectedMinLogLevel");
+                    OnPropertyChanged(nameof(SelectedMinLogLevel));
                 }
             }
         }
@@ -60,7 +60,7 @@ namespace LogApplication.ViewModels {
                 lock (ViewModelConstants.SYNC_OBJECT) {
                     UpdateByActiveChange(isActive, value);
                     isActive = value;
-                    OnPropertyChanged("IsActive");
+                    OnPropertyChanged(nameof(IsActive));
                 }
             }
         }

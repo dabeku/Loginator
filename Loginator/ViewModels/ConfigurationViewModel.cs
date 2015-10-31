@@ -27,7 +27,7 @@ namespace Loginator.ViewModels {
             get { return logType; }
             set {
                 logType = value;
-                OnPropertyChanged("LogType");
+                OnPropertyChanged(nameof(LogType));
             }
         }
 
@@ -36,7 +36,7 @@ namespace Loginator.ViewModels {
             get { return portChainsaw; }
             set {
                 portChainsaw = value;
-                OnPropertyChanged("PortChainsaw");
+                OnPropertyChanged(nameof(PortChainsaw));
             }
         }
 
@@ -45,7 +45,7 @@ namespace Loginator.ViewModels {
             get { return portLogcat; }
             set {
                 portLogcat = value;
-                OnPropertyChanged("PortLogcat");
+                OnPropertyChanged(nameof(PortLogcat));
             }
         }
 
