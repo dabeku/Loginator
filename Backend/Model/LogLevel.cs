@@ -28,6 +28,15 @@ namespace Backend.Model {
             return Levels.FirstOrDefault(m => m.Name == name);
         }
 
+        public static IEnumerable<LoggingLevel> GetAllLoggingLevels() {
+            yield return LoggingLevel.TRACE;
+            yield return LoggingLevel.DEBUG;
+            yield return LoggingLevel.INFO;
+            yield return LoggingLevel.WARN;
+            yield return LoggingLevel.ERROR;
+            yield return LoggingLevel.FATAL;
+        }
+
         public static bool IsLogLevelAboveMin(LoggingLevel level, LoggingLevel minLevel) {
             if (level == null || minLevel == null) {
                 return false;

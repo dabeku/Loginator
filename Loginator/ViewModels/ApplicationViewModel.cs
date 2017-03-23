@@ -22,7 +22,7 @@ namespace LogApplication.ViewModels {
     public class ApplicationViewModel : INotifyPropertyChanged {
 
         public string Name { get; set; }
-        public IList<LoggingLevel> LogLevels { get; set; }
+        public IList<LoggingLevel> LogLevels { get; } = LoggingLevel.GetAllLoggingLevels().OrderBy(x => x.Id).ToList();
 
         private int MaxNumberOfLogsPerLevel { get; set; }
         private string SearchCriteria { get; set; }
@@ -65,17 +65,14 @@ namespace LogApplication.ViewModels {
             }
         }
 
-        public ApplicationViewModel(string name, OrderedObservableCollection logs, ObservableCollection<NamespaceViewModel> namespaces) {
+        public ApplicationViewModel(string name, OrderedObservableCollection logs, ObservableCollection<NamespaceViewModel> namespaces, 
+            LoggingLevel initialLogLevel) 
+        {
             Name = name;
             IsActive = true;
-            LogLevels = new List<LoggingLevel>();
-            LogLevels.Add(LoggingLevel.TRACE);
-            LogLevels.Add(LoggingLevel.DEBUG);
-            LogLevels.Add(LoggingLevel.INFO);
-            LogLevels.Add(LoggingLevel.WARN);
-            LogLevels.Add(LoggingLevel.ERROR);
-            LogLevels.Add(LoggingLevel.FATAL);
-            SelectedMinLogLevel = LogLevels.ElementAt(0);
+            
+            //SelectedMinLogLevel = LogLevels.ElementAt(0);
+            SelectedMinLogLevel = initialLogLevel;
             Logs = logs;
             LogsTrace = new List<LogViewModel>();
             LogsDebug = new List<LogViewModel>();
