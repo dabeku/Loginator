@@ -64,6 +64,7 @@ namespace LogApplication.ViewModels {
             set {
                 searchCriteria = value;
                 OnPropertyChanged(nameof(SearchCriteria));
+                UpdateSearchCriteria(this);
             }
         }
 
@@ -73,6 +74,18 @@ namespace LogApplication.ViewModels {
             set {
                 isInverted = value;
                 OnPropertyChanged(nameof(IsInverted));
+            }
+        }
+
+        public IList<LoggingLevel> LogLevels { get; } = LoggingLevel.GetAllLoggingLevels().OrderBy(x => x.Id).ToList();
+
+        private LoggingLevel selectedInitialLogLevel;
+
+        public LoggingLevel SelectedInitialLogLevel {
+            get { return selectedInitialLogLevel; }
+            set {
+                selectedInitialLogLevel = value;
+                OnPropertyChanged(nameof(SelectedInitialLogLevel));
             }
         }
 
@@ -111,6 +124,7 @@ namespace LogApplication.ViewModels {
             ApplicationConfiguration = applicationConfiguration;
             ConfigurationDao = configurationDao;
             IsActive = true;
+            SelectedInitialLogLevel = LoggingLevel.TRACE;
             NumberOfLogsPerLevel = Constants.DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
             Logger = LogManager.GetCurrentClassLogger();
             Logs = new OrderedObservableCollection();
@@ -259,7 +273,7 @@ namespace LogApplication.ViewModels {
                 foreach (var log in logsToInsert) {
                     var application = Applications.FirstOrDefault(m => m.Name == log.Application);
                     if (application == null) {
-                        application = new ApplicationViewModel(log.Application, Logs, Namespaces);
+                        application = new ApplicationViewModel(log.Application, Logs, Namespaces, SelectedInitialLogLevel);
                         Applications.Add(application);
                     }
                 }

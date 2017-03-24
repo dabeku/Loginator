@@ -19,16 +19,22 @@
             <StackPanel Orientation="Vertical">
                 <DockPanel>
                     <CheckBox Content="Is active" IsChecked="{Binding IsActive}"></CheckBox>
-                    <TextBox Text="{Binding NumberOfLogsPerLevel}" ToolTip="Enter limit per application per log level" Width="100" Margin="16,0,0,0"></TextBox>
-                    <Button Content="Limit" Width="80" Margin="2,0,0,0" Command="{Binding UpdateNumberOfLogsPerLevelCommand}"></Button>
-                    <TextBox Text="{Binding SearchCriteria}" ToolTip="Enter search query" Width="100" Margin="16,0,0,0"></TextBox>
-                    <Button Content="Search" Width="80" Margin="2,0,0,0" Command="{Binding UpdateSearchCriteriaCommand}"></Button>
+                    <TextBox Text="{Binding NumberOfLogsPerLevel}" ToolTip="Enter limit per application per log level" Width="100" Margin="16,0,0,0">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding UpdateNumberOfLogsPerLevelCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <Button Content="Limit" Width="60" Margin="2,0,0,0" Command="{Binding UpdateNumberOfLogsPerLevelCommand}"></Button>
+                    <TextBox Text="{Binding SearchCriteria, UpdateSourceTrigger=PropertyChanged}" ToolTip="Enter search query" Width="100" Margin="16,0,0,0"></TextBox>
+                    <Button Content="Search" Width="60" Margin="2,0,0,0" Command="{Binding UpdateSearchCriteriaCommand}"></Button>
                     <CheckBox Content="Invert" IsChecked="{Binding IsInverted}" Margin="2,2,0,0"></CheckBox>
                     <Grid>
-                        <Button Content="Configure..." Width="80" Margin="0,0,164,0" Command="{Binding OpenConfigurationCommand}" HorizontalAlignment="Right"></Button>
-                        <Button Content="Clear Logs" Width="80" Margin="0,0,82,0" Command="{Binding ClearLogsCommand}" HorizontalAlignment="Right"></Button>
-                        <Button Content="Clear All" Width="80" Margin="16,0,0,0" Command="{Binding ClearAllCommand}" HorizontalAlignment="Right"></Button>
+                        <Button Content="Configure..." Width="80" Margin="0,0,249,0" Command="{Binding OpenConfigurationCommand}" HorizontalAlignment="Right"></Button>
+                        <Button Content="Clear Logs" Width="80" Margin="0,0,166,0" Command="{Binding ClearLogsCommand}" HorizontalAlignment="Right"></Button>
+                        <Button Content="Clear All" Width="80" Margin="0,0,83,0" Command="{Binding ClearAllCommand}" HorizontalAlignment="Right"></Button>
+                        <ComboBox ItemsSource="{Binding Path=LogLevels}" DisplayMemberPath="Name" SelectedValue="{Binding SelectedInitialLogLevel}" Width="70" Margin="2,0,2,0" HorizontalAlignment="Right"/>
                     </Grid>
+                    
                     
                 </DockPanel>
             </StackPanel>
