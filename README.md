@@ -6,6 +6,12 @@ Loginator is a high performance log viewer that shows you logs in realtime:
 * Chainsaw (nlog, log4net, log4j, etc.)
 * Logcat (Android)
 
+## Download
+
+You can download the current release by clicking **Releases** above.
+
+## Preview
+
 Here is how it looks like:
 
 ![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9817745/0aaca424-58a5-11e5-82ca-e791690958d8.png)
