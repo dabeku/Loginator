@@ -77,7 +77,7 @@ namespace Backend {
                 bool isRightPort = (wantedIpEndPoint.Port == receivedIpEndPoint.Port)
                                    || wantedIpEndPoint.Port == 0;
                 if (isRightHost && isRightPort) {
-                    string receivedText = Encoding.ASCII.GetString(receiveBytes);
+                    string receivedText = Encoding.UTF8.GetString(receiveBytes);
 
                     if (ApplicationConfiguration.IsMessageTraceEnabled) {
                         Logger.Trace(receivedText);

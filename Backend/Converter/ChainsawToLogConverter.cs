@@ -39,7 +39,7 @@ namespace Backend.Converter {
                 };
 
                 MemoryStream stream = new MemoryStream();
-                StreamWriter writer = new StreamWriter(stream);
+                StreamWriter writer = new StreamWriter(stream, Encoding.UTF8);
                 writer.Write(text);
                 writer.Flush();
                 stream.Position = 0;
