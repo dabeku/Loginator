@@ -16,7 +16,7 @@ Here is how it looks like:
 
 ![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9817745/0aaca424-58a5-11e5-82ca-e791690958d8.png)
 
-![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/9817754/1963b08e-58a5-11e5-85eb-89fc6d253c72.png)
+![ScreenShot](https://cloud.githubusercontent.com/assets/14138808/25998297/a3489e76-3720-11e7-8c9f-60b67423d2c5.png)
 
 ## Some cool features include
 
