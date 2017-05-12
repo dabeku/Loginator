@@ -8,7 +8,7 @@ Loginator is a high performance log viewer that shows you logs in realtime:
 
 ## Download
 
-You can download the current release by clicking **Releases** above.
+You can download the current release ![here](https://github.com/dabeku/Loginator/releases) or by clicking **Releases** above.
 
 ## Preview
 
