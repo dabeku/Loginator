@@ -27,6 +27,9 @@ Here is how it looks like:
 * Filter output based on log level and expressions
 * Configure log type and port
 
+## Issues
+If the **timestamps are incorrect** (i.e. off by x hours): Remove existing configurations from C:\Users\your-username\AppData\Local\Loginator by simply deleting all folders and restarting the application.
+
 ## TODO (from most to least important)
 
 * Add option to group by application (name only)
