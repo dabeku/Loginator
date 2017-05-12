@@ -33,10 +33,12 @@ namespace LogApplication.ViewModels {
         internal IApplicationConfiguration ApplicationConfiguration { get; set; }
 
         private const int TIME_INTERVAL_IN_MILLISECONDS = 1000;
-        
+
         private ILogger Logger { get; set; }
         private Receiver Receiver { get; set; }
         private Timer Timer { get; set; }
+        
+        private LogTimeFormat LogTimeFormat { get; set; }
 
         private bool isActive;
         public bool IsActive {
@@ -123,6 +125,7 @@ namespace LogApplication.ViewModels {
         public LoginatorViewModel(IApplicationConfiguration applicationConfiguration, IConfigurationDao configurationDao) {
             ApplicationConfiguration = applicationConfiguration;
             ConfigurationDao = configurationDao;
+            ConfigurationDao.OnConfigurationChanged += ConfigurationDao_OnConfigurationChanged;
             IsActive = true;
             SelectedInitialLogLevel = LoggingLevel.TRACE;
             NumberOfLogsPerLevel = Constants.DEFAULT_MAX_NUMBER_OF_LOGS_PER_LEVEL;
@@ -131,6 +134,11 @@ namespace LogApplication.ViewModels {
             LogsToInsert = new List<LogViewModel>();
             Namespaces = new ObservableCollection<NamespaceViewModel>();
             Applications = new ObservableCollection<ApplicationViewModel>();
+        }
+
+        private void ConfigurationDao_OnConfigurationChanged(object sender, EventArgs e) {
+            Logger.Info("[ConfigurationDao_OnConfigurationChanged] Configuration changed.");
+            LogTimeFormat = ConfigurationDao.Read().LogTimeFormat;
         }
 
         public void StartListener() {
@@ -177,7 +185,11 @@ namespace LogApplication.ViewModels {
         }
 
         private LogViewModel ToLogViewModel(Log log) {
-            return Mapper.Map<Log, LogViewModel>(log);
+            var logViewModel = Mapper.Map<Log, LogViewModel>(log);
+            if (LogTimeFormat == LogTimeFormat.CONVERT_TO_LOCAL_TIME) {
+                logViewModel.Timestamp = logViewModel.Timestamp.ToLocalTime();
+            }
+            return logViewModel;
         }
 
         private void Receiver_LogReceived(object sender, LogReceivedEventArgs e) {

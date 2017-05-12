@@ -49,6 +49,15 @@ namespace Loginator.ViewModels {
             }
         }
 
+        private LogTimeFormat logTimeFormat;
+        public LogTimeFormat LogTimeFormat {
+            get { return logTimeFormat; }
+            set {
+                logTimeFormat = value;
+                OnPropertyChanged(nameof(LogTimeFormat));
+            }
+        }
+
         public Action CloseAction { get; set; }
 
         public ConfigurationViewModel(IConfigurationDao configurationDao) {
@@ -57,6 +66,7 @@ namespace Loginator.ViewModels {
             LogType = configuration.LogType;
             PortChainsaw = configuration.PortChainsaw.ToString();
             PortLogcat = configuration.PortLogcat.ToString();
+            LogTimeFormat = configuration.LogTimeFormat;
         }
 
         private ICommand cancelChangesCommand;
@@ -90,7 +100,8 @@ namespace Loginator.ViewModels {
                 Configuration configuration = new Configuration() {
                     LogType = LogType,
                     PortChainsaw = Convert.ToInt32(PortChainsaw),
-                    PortLogcat = Convert.ToInt32(PortLogcat)
+                    PortLogcat = Convert.ToInt32(PortLogcat),
+                    LogTimeFormat = LogTimeFormat
                 };
                 ConfigurationDao.Write(configuration);
                 IoC.Get<Receiver>().Initialize(configuration);

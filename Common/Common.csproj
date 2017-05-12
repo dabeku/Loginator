@@ -62,6 +62,7 @@
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
     <Compile Include="LinqQeueExtensions.cs" />
+    <Compile Include="LogTimeFormat.cs" />
     <Compile Include="LogType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

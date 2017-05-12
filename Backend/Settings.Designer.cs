@@ -58,5 +58,17 @@ namespace Backend {
                 this["PortLogcat"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LogTimeFormat {
+            get {
+                return ((string)(this["LogTimeFormat"]));
+            }
+            set {
+                this["LogTimeFormat"] = value;
+            }
+        }
     }
 }

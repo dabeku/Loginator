@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 namespace Backend.Manager {
     public class ConfigurationDaoSettings : IConfigurationDao {
 
+        public event EventHandler<EventArgs> OnConfigurationChanged;
+
         public Configuration Read() {
             Configuration configuration = new Configuration();
 
@@ -38,19 +40,44 @@ namespace Backend.Manager {
             }
             configuration.PortLogcat = Convert.ToInt32(portLogcat);
 
+            string logTimeFormat = Settings.Default["LogTimeFormat"] as string;
+            if (String.IsNullOrEmpty(logTimeFormat)) {
+                logTimeFormat = "convertToLocalTime";
+                Settings.Default["LogTimeFormat"] = logTimeFormat;
+            }
+            if (logTimeFormat == "convertToLocalTime") {
+                configuration.LogTimeFormat = LogTimeFormat.CONVERT_TO_LOCAL_TIME;
+            } else if (logTimeFormat == "doNotChange") {
+                configuration.LogTimeFormat = LogTimeFormat.DO_NOT_CHANGE;
+            }
+
             Settings.Default.Save();
 
             return configuration;
         }
 
         public void Write(Configuration configuration) {
+
             if (configuration.LogType == LogType.CHAINSAW) {
                 Settings.Default["Type"] = "chainsaw";
             } else if (configuration.LogType == LogType.LOGCAT) {
                 Settings.Default["Type"] = "logcat";
             }
+
             Settings.Default["PortChainsaw"] = configuration.PortChainsaw.ToString();
+
             Settings.Default["PortLogcat"] = configuration.PortLogcat.ToString();
+
+            if (configuration.LogTimeFormat == LogTimeFormat.CONVERT_TO_LOCAL_TIME) {
+                Settings.Default["LogTimeFormat"] = "convertToLocalTime";
+            } else if (configuration.LogTimeFormat == LogTimeFormat.DO_NOT_CHANGE) {
+                Settings.Default["LogTimeFormat"] = "doNotChange";
+            }
+
+            if (OnConfigurationChanged != null) {
+                OnConfigurationChanged(this, new EventArgs());
+            }
+
             Settings.Default.Save();
         }
     }

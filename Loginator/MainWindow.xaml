@@ -45,9 +45,6 @@
                 <RowDefinition Height="4" />
                 <RowDefinition Height="150" />
             </Grid.RowDefinitions>
-            <!--controls:GridViewColumnResize.Enabled="True"-->
-            <!--controls:GridViewColumnResize.Width="130"-->
-            <!--controls:GridViewColumnResize.Width="*"-->
             <ListView Grid.Row="0"
                 SelectedItem="{Binding SelectedLog}"
                 ItemsSource="{Binding Logs}"
@@ -60,7 +57,7 @@
                         <GridViewColumn Header="Timestamp" controls:GridViewColumnResize.Width="140">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:dd.MM.yyyy hh:mm:ss.fff}'}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
+                                    <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss.fff}'}" Foreground="{Binding Level, Converter={StaticResource LevelToForegroundConverter}}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

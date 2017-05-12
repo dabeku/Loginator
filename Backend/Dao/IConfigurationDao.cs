@@ -9,5 +9,7 @@ namespace Backend.Dao {
     public interface IConfigurationDao {
         Configuration Read();
         void Write(Configuration configuration);
+
+        event EventHandler<EventArgs> OnConfigurationChanged;
     }
 }

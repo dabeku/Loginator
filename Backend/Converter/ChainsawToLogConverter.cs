@@ -67,8 +67,6 @@ namespace Backend.Converter {
                         attribute = attributes.GetNamedItem("timestamp");
                         if (attribute != null) {
                             var timespan = TimeSpan.FromMilliseconds(Int64.Parse(attribute.Value));
-                            // TODO: Find out why we have to do this here (maybe UTC conversion?)
-                            timespan.Add(TimeSpan.FromHours(2));
                             log.Timestamp = new DateTime(1970, 1, 1).Add(timespan);
                         }
                         attribute = attributes.GetNamedItem("thread");
@@ -95,7 +93,7 @@ namespace Backend.Converter {
                                 var application = log.Properties.FirstOrDefault(m => m.Name == "log4japp");
                                 log.Application = application == null ? Constants.APPLICATION_GLOBAL : application.Value;
 
-                                var context = log.Properties.Where(m => !m.Name.StartsWith("log4j")).Select(m => m.Name + ": " + m.Value);
+                                var context = log.Properties.Where(m => !m.Name.StartsWith("log4j")).OrderBy(m => m.Name).Select(m => m.Name + ": " + m.Value);
                                 log.Context = String.Join(", ", context);
                             }
                         }
