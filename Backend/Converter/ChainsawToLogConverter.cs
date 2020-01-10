@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
-using System.Xml.Linq;
 using Backend.Model;
 using NLog;
 using Common;
@@ -92,6 +90,8 @@ namespace Backend.Converter {
 
                                 var application = log.Properties.FirstOrDefault(m => m.Name == "log4japp");
                                 log.Application = application == null ? Constants.APPLICATION_GLOBAL : application.Value;
+
+                                log.MachineName = log.Properties.FirstOrDefault(m => m.Name == "log4jmachinename")?.Value;
 
                                 var context = log.Properties.Where(m => !m.Name.StartsWith("log4j")).OrderBy(m => m.Name).Select(m => m.Name + ": " + m.Value);
                                 log.Context = String.Join(", ", context);
