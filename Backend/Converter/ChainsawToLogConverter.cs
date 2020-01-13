@@ -80,7 +80,7 @@ namespace Backend.Converter {
                             }
                             if (child.Name.EndsWith("NDC"))
                             {
-                                log.Message = child.InnerText + log.Message;
+                                log.Message = $"{child.InnerText} {log.Message}";
                             }
                             if (child.Name.EndsWith("throwable")) {
                                 log.Exception = child.InnerText;
