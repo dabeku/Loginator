@@ -43,17 +43,53 @@ If the **timestamps are incorrect** (i.e. off by x hours): Remove existing confi
 * NLog (.net):
 
 In your logging app add a new target
-```
+
+```xml
 <target xsi:type="Chainsaw" name="chainsaw" address="udp://127.0.0.1:7071" />
 ```
+
 or, if you want do include the context
-```
+
+```xml
 <target xsi:type="Chainsaw" name="chainsaw" address="udp://127.0.0.1:7071" includeMdc="true" />
 ```
+
 and add the logger
-```
+
+```xml
 <logger name="*" minlevel="Trace" writeTo="chainsaw" />
 ```
+
+### Nested diagnostic logical context support
+
+To use nested diagnostic context in your application add the following attribute to your target
+
+```xml
+<target xsi:type="Chainsaw"
+        includeNdlc="true"
+        ...
+    />
+```
+
+If Ndlc information is available, it is used as prefix to the message.
+
+e.g.
+
+```cs
+NestedDiagnosticsLogicalContext.Push("Client 123");
+this.logger.Debug("connected");
+```
+
+or in combination with [Microsoft.Extensions.Logging](https://www.nuget.org/packages/Microsoft.Extensions.Logging/) and [NLog.Extensions.Logging](https://www.nuget.org/packages/NLog.Extensions.Logging/)
+
+```cs
+using (this.logger.BeginScope("Client 123"))
+{
+    this.logger.LogDebug("connected");
+}
+```
+
+is displayed as `Client 123 connected` in the message column.
 
 ## Logcat logging
 

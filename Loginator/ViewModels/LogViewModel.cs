@@ -1,10 +1,7 @@
 ﻿using Backend.Model;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace LogApplication.ViewModels {
 
@@ -17,7 +14,8 @@ namespace LogApplication.ViewModels {
         public string Application { get; set; }
         public string Thread { get; set; }
         public string Context { get; set; }
-        
+        public string MachineName { get; set; }
+
         public LogViewModel() { }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -48,6 +46,10 @@ namespace LogApplication.ViewModels {
             if (!String.IsNullOrEmpty(Exception)) {
                 sb.Append("Exception: ");
                 sb.AppendLine(Exception);
+            }
+            if (MachineName != null) {
+                sb.Append("Host: ");
+                sb.AppendLine(MachineName);
             }
             return sb.ToString();
         }

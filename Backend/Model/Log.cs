@@ -1,9 +1,6 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Backend.Model {
 
@@ -24,6 +21,10 @@ namespace Backend.Model {
         /// The exception details including the stacktrace. May not be available.
         /// </summary>
         public string Exception { get; set; }
+        /// <summary>
+        /// Gets or sets the machine name of the log. May not be available.
+        /// </summary>
+        public string MachineName { get; set; }
         /// <summary>
         /// The namespace of the log. May be set to "global" if no namespace is available.
         /// </summary>
@@ -58,7 +59,7 @@ namespace Backend.Model {
                 return def;
             }
         }
-        
+
         public override bool Equals(object obj) {
             if (obj == null || GetType() != obj.GetType()) {
                 return false;
