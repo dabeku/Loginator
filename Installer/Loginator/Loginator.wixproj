@@ -10,7 +10,7 @@
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
-    <WixToolPath>$(MSBuildProjectDirectory)\..\..\packages\WiX.Toolset.2015.3.10.0.1503\tools\wix\</WixToolPath>
+    <WixToolPath>$(MSBuildProjectDirectory)\..\..\packages\WiX.3.11.2\tools\</WixToolPath>
     <WixTargetsPath>$(WixToolPath)Wix.targets</WixTargetsPath>
     <WixTasksPath>$(WixToolPath)wixtasks.dll</WixTasksPath>
     <RunWixToolsOutOfProc>true</RunWixToolsOutOfProc>
@@ -59,7 +59,7 @@
     </WixExtension>
   </ItemGroup>
   <PropertyGroup>
-    <WixToolPath>$(SolutionDir)packages\WiX.Toolset.2015.3.10.0.1503\tools\wix\</WixToolPath>
+    <WixToolPath>$(SolutionDir)packages\WiX.3.11.2\tools\</WixToolPath>
     <WixTargetsPath>$(WixToolPath)wix.targets</WixTargetsPath>
     <WixTasksPath>$(WixToolPath)WixTasks.dll</WixTasksPath>
   </PropertyGroup>
