@@ -1,2 +1,2 @@
-﻿versionCode=7
+﻿versionCode=8
 versionName=1.6.0
