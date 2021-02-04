@@ -64,8 +64,13 @@ namespace Backend.Converter {
                         }
                         attribute = attributes.GetNamedItem("timestamp");
                         if (attribute != null) {
-                            var timespan = TimeSpan.FromMilliseconds(Int64.Parse(attribute.Value));
-                            log.Timestamp = new DateTime(1970, 1, 1).Add(timespan);
+                            if (long.TryParse(attribute.Value, out var timestamp)) {
+                                // log4j
+                                log.Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime;
+                            } else {
+                                // log4net
+                                log.Timestamp = XmlConvert.ToDateTimeOffset(attribute.Value).LocalDateTime;
+                            }
                         }
                         attribute = attributes.GetNamedItem("thread");
                         if (attribute != null) {
@@ -82,7 +87,7 @@ namespace Backend.Converter {
                             {
                                 log.Message = $"{child.InnerText} {log.Message}";
                             }
-                            if (child.Name.EndsWith("throwable")) {
+                            if (child.Name.EndsWith("throwable") || child.Name.EndsWith("exception")) {
                                 log.Exception = child.InnerText;
                             }
                             if (child.Name.EndsWith("properties")) {
@@ -95,9 +100,11 @@ namespace Backend.Converter {
                                 var application = log.Properties.FirstOrDefault(m => m.Name == "log4japp");
                                 log.Application = application == null ? Constants.APPLICATION_GLOBAL : application.Value;
 
-                                log.MachineName = log.Properties.FirstOrDefault(m => m.Name == "log4jmachinename")?.Value;
+                                var log4JMachineName = log.Properties.FirstOrDefault(m => m.Name == "log4jmachinename")?.Value;
+                                var log4NetMachineName = log.Properties.FirstOrDefault(m => m.Name == "log4net:HostName")?.Value;
+                                log.MachineName = log4JMachineName ?? log4NetMachineName;
 
-                                var context = log.Properties.Where(m => !m.Name.StartsWith("log4j")).OrderBy(m => m.Name).Select(m => m.Name + ": " + m.Value);
+                                var context = log.Properties.Where(m => !m.Name.StartsWith("log4j") && !m.Name.StartsWith("log4net")).OrderBy(m => m.Name).Select(m => m.Name + ": " + m.Value);
                                 log.Context = String.Join(", ", context);
                             }
                         }
