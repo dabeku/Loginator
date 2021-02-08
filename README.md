@@ -34,7 +34,6 @@ If the **timestamps are incorrect** (i.e. off by x hours): Remove existing confi
 
 * Add option to group by application (name only)
 * Export function
-* Test with log4j and log4net
 * Documentation for installation
 * Other data sources (database, file, etc.) via polling
 
